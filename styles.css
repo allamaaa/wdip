@@ -580,6 +580,30 @@ body {
   font-weight: 400;
 }
 
+.edit-airport-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  margin-left: auto;
+}
+
+.edit-airport-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-glow);
+}
+
 /* --- Search Bar --- */
 .search-bar-container {
   margin-bottom: 40px;
@@ -1131,6 +1155,20 @@ body {
   margin-top: 2px;
 }
 
+.fbo-item[data-fbo-id] {
+  cursor: pointer;
+}
+
+.fbo-item.fbo-hover-active {
+  background: rgba(0, 232, 123, 0.06);
+  border-left: 3px solid var(--green);
+  padding-left: 17px;
+}
+
+.fbo-tooltip {
+  border-color: rgba(0, 232, 123, 0.3) !important;
+}
+
 /* --- Contribute Section --- */
 .contribute-section {
   padding: 100px 0;
@@ -1492,5 +1530,495 @@ body {
 
   .airport-info-header .icao {
     font-size: 28px;
+  }
+}
+
+/* ============================================
+   EDIT PAGE STYLES
+   ============================================ */
+
+.edit-page {
+  background: var(--bg-primary);
+}
+
+/* Editor Nav Actions */
+.editor-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.editor-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.editor-back-link:hover {
+  color: var(--text-primary);
+  border-color: var(--border-light);
+  background: var(--bg-card);
+}
+
+.editor-save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 18px;
+  background: var(--accent);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+  opacity: 0.5;
+}
+
+.editor-save-btn.has-changes {
+  opacity: 1;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.editor-save-btn:hover {
+  background: #33dfff;
+}
+
+.editor-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
+
+.editor-export-btn:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.editor-reset-btn {
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
+
+.editor-reset-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* Editor Main */
+.editor-main {
+  padding: 80px 24px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.editor-airport-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.editor-icao {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 3px;
+}
+
+.editor-name {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Editor Layout */
+.editor-layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .editor-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Editor Map */
+.editor-map-col .map-card {
+  position: sticky;
+  top: 80px;
+}
+
+#editMap {
+  width: 100%;
+  height: 550px;
+  background: var(--bg-primary);
+  z-index: 1;
+}
+
+.editor-map-instructions {
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.editor-map-instructions strong {
+  color: var(--text-secondary);
+}
+
+/* Editor Panel */
+.editor-panel-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.editor-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.editor-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.editor-section-header h3 {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.editor-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
+
+.editor-add-btn:hover {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: var(--accent);
+}
+
+/* Editor Cards */
+.editor-cards {
+  padding: 0;
+}
+
+.editor-term-card,
+.editor-fbo-card {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+  cursor: pointer;
+}
+
+.editor-term-card:last-child,
+.editor-fbo-card:last-child {
+  border-bottom: none;
+}
+
+.editor-term-card:hover,
+.editor-fbo-card:hover {
+  background: var(--bg-card-hover);
+}
+
+.editor-term-card.renovation {
+  border-left: 3px solid var(--amber);
+}
+
+.editor-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.editor-card-name-input {
+  background: transparent;
+  border: 1px solid transparent;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  flex: 1;
+  min-width: 0;
+}
+
+.editor-card-name-input:hover {
+  border-color: var(--border);
+}
+
+.editor-card-name-input:focus {
+  border-color: var(--accent);
+  background: var(--bg-surface);
+}
+
+.editor-card-delete {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: var(--transition);
+  line-height: 1;
+}
+
+.editor-card-delete:hover {
+  color: var(--red);
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.editor-card-field {
+  margin-bottom: 8px;
+}
+
+.editor-card-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.editor-card-input {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.editor-card-input:focus {
+  border-color: var(--accent);
+}
+
+.editor-reno-label {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px !important;
+  color: var(--amber) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  cursor: pointer;
+}
+
+.editor-reno-label input[type="checkbox"] {
+  accent-color: var(--amber);
+}
+
+/* Airline tags in editor */
+.editor-card-airlines {
+  margin-top: 10px;
+}
+
+.editor-card-airlines > label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.editor-airline-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.editor-airline-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.editor-airline-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.editor-airline-remove:hover {
+  color: var(--red);
+}
+
+.editor-add-airline {
+  margin-top: 4px;
+}
+
+.editor-airline-input {
+  width: 120px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: var(--transition);
+}
+
+.editor-airline-input:focus {
+  border-color: var(--accent);
+}
+
+.editor-airline-input::placeholder {
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--font-sans);
+  color: var(--text-muted);
+}
+
+.editor-empty {
+  padding: 24px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Toast */
+.editor-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  padding: 12px 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--green);
+  border-radius: var(--radius-md);
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  z-index: 300;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.editor-toast.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.editor-toast.error {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* Leaflet editable vertex markers dark theme */
+.leaflet-div-icon {
+  background: var(--accent) !important;
+  border: 2px solid #fff !important;
+  border-radius: 50% !important;
+  width: 10px !important;
+  height: 10px !important;
+  margin-left: -5px !important;
+  margin-top: -5px !important;
+}
+
+/* Editor responsive */
+@media (max-width: 768px) {
+  .editor-nav-actions {
+    gap: 6px;
+  }
+  .editor-export-btn,
+  .editor-reset-btn {
+    display: none;
+  }
+  .editor-layout {
+    grid-template-columns: 1fr;
+  }
+  .editor-map-col .map-card {
+    position: static;
+  }
+  #editMap {
+    height: 350px;
   }
 }
