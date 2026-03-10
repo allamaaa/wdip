@@ -108,14 +108,18 @@ const AIRPORTS = {
     quickAirlines: ["DAL", "AAL", "JBU", "UAE", "BAW", "DLH", "AFR", "SIA"],
     fbos: [
       {
+        id: "FBO1",
         name: "Modern Aviation",
         location: "Building 141, North Boundary Road",
         phone: "(718) 751-1200",
+        bounds: [[40.6500, -73.7880], [40.6520, -73.7840]],
       },
       {
+        id: "FBO2",
         name: "Sheltair",
         location: "Hangar 19, JFK Airport",
         phone: "(718) 244-6600",
+        bounds: [[40.6490, -73.7760], [40.6510, -73.7720]],
       },
     ],
   },
@@ -179,6 +183,7 @@ let leafletMap = null;
 let satelliteTileLayer = null;
 let chartOverlay = null;
 let terminalRectangles = {}; // keyed by terminal id
+let fboRectangles = {}; // keyed by fbo id
 let currentMapView = "satellite"; // "satellite" or "chart"
 
 // Rectangle styles
@@ -224,13 +229,62 @@ const RECT_STYLE_RENOVATION_HIGHLIGHTED = {
   dashArray: "6 4",
 };
 
+const RECT_STYLE_FBO = {
+  color: "#00e87b",
+  weight: 2,
+  opacity: 0.4,
+  fillColor: "#00e87b",
+  fillOpacity: 0.06,
+};
+
+const RECT_STYLE_FBO_HOVER = {
+  color: "#00e87b",
+  weight: 2,
+  opacity: 0.7,
+  fillColor: "#00e87b",
+  fillOpacity: 0.15,
+};
+
+const RECT_STYLE_FBO_HIGHLIGHTED = {
+  color: "#00e87b",
+  weight: 3,
+  opacity: 1,
+  fillColor: "#00e87b",
+  fillOpacity: 0.25,
+};
+
 // ==========================================
 // INITIALIZATION
 // ==========================================
 
 function init() {
+  loadFromLocalStorage();
   renderAirportCards();
   bindEvents();
+}
+
+function loadFromLocalStorage() {
+  try {
+    const saved = localStorage.getItem("wdip_airports");
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    // Deep-merge saved data into AIRPORTS (only update existing keys + add new ones)
+    Object.keys(data).forEach((icao) => {
+      if (AIRPORTS[icao]) {
+        // Merge into existing airport
+        const savedApt = data[icao];
+        if (savedApt.terminals) AIRPORTS[icao].terminals = savedApt.terminals;
+        if (savedApt.airlines) AIRPORTS[icao].airlines = savedApt.airlines;
+        if (savedApt.fbos) AIRPORTS[icao].fbos = savedApt.fbos;
+        if (savedApt.quickAirlines) AIRPORTS[icao].quickAirlines = savedApt.quickAirlines;
+      } else {
+        // Add new airport entirely
+        AIRPORTS[icao] = data[icao];
+      }
+    });
+  } catch (e) {
+    console.warn("WDIP: Failed to load saved data from localStorage", e);
+  }
 }
 
 // ==========================================
@@ -452,6 +506,13 @@ function openAirport(icao) {
     b.classList.toggle("active", b.dataset.view === "satellite");
   });
 
+  // Show edit button
+  const editBtn = document.getElementById("editAirportBtn");
+  if (editBtn) {
+    editBtn.href = `edit.html?icao=${currentAirport.icao}`;
+    editBtn.style.display = "inline-flex";
+  }
+
   // Show search section, hide airport grid section
   dom.searchSection.style.display = "block";
   dom.airportsSection.style.display = "none";
@@ -557,6 +618,55 @@ function renderAirportMap() {
 
     terminalRectangles[term.id] = rect;
   });
+
+  // FBO rectangles
+  fboRectangles = {};
+  if (currentAirport.fbos) {
+    currentAirport.fbos.forEach((fbo) => {
+      if (!fbo.bounds) return;
+      const rect = L.rectangle(fbo.bounds, RECT_STYLE_FBO);
+      rect.addTo(leafletMap);
+
+      rect.bindTooltip(`<strong>${fbo.name}</strong><span class="tooltip-gates">FBO — General Aviation</span>`, {
+        className: "terminal-tooltip fbo-tooltip",
+        direction: "top",
+        offset: [0, -5],
+      });
+
+      rect.on("mouseover", () => {
+        rect.setStyle(RECT_STYLE_FBO_HOVER);
+      });
+      rect.on("mouseout", () => {
+        rect.setStyle(RECT_STYLE_FBO);
+      });
+      rect.on("click", () => {
+        highlightFBO(fbo.id);
+      });
+
+      fboRectangles[fbo.id] = rect;
+    });
+  }
+}
+
+function highlightFBO(fboId) {
+  // Reset all FBO rectangles
+  Object.values(fboRectangles).forEach((rect) => rect.setStyle(RECT_STYLE_FBO));
+  // Reset terminal selection too
+  highlightTerminal(null);
+
+  if (!fboId) return;
+
+  const rect = fboRectangles[fboId];
+  if (rect) {
+    rect.setStyle(RECT_STYLE_FBO_HIGHLIGHTED);
+    leafletMap.panTo(rect.getCenter(), { animate: true, duration: 0.5 });
+  }
+
+  // Show FBO info
+  const fbo = currentAirport.fbos.find((f) => f.id === fboId);
+  if (fbo) {
+    dom.mapHint.textContent = fbo.name;
+  }
 }
 
 function destroyMap() {
@@ -566,6 +676,7 @@ function destroyMap() {
     satelliteTileLayer = null;
     chartOverlay = null;
     terminalRectangles = {};
+    fboRectangles = {};
   }
 }
 
@@ -582,7 +693,10 @@ function switchMapView(view) {
       satelliteTileLayer.addTo(leafletMap);
     }
   } else if (view === "chart") {
-    // Show chart overlay on top of satellite
+    // Remove satellite tiles, show chart overlay
+    if (leafletMap.hasLayer(satelliteTileLayer)) {
+      leafletMap.removeLayer(satelliteTileLayer);
+    }
     if (chartOverlay && !leafletMap.hasLayer(chartOverlay)) {
       chartOverlay.addTo(leafletMap);
     }
@@ -917,13 +1031,32 @@ function renderFBOs() {
   dom.fboList.innerHTML = currentAirport.fbos
     .map(
       (fbo) => `
-    <div class="fbo-item">
+    <div class="fbo-item" data-fbo-id="${fbo.id || ""}">
       <div class="fbo-name">${fbo.name}</div>
       <div class="fbo-location">${fbo.location}</div>
       <div class="fbo-phone">${fbo.phone}</div>
     </div>`
     )
     .join("");
+
+  // Add hover/click events for FBO map highlighting
+  dom.fboList.querySelectorAll(".fbo-item").forEach((item) => {
+    const fboId = item.dataset.fboId;
+    if (!fboId || !fboRectangles[fboId]) return;
+
+    item.addEventListener("mouseenter", () => {
+      fboRectangles[fboId].setStyle(RECT_STYLE_FBO_HIGHLIGHTED);
+      item.classList.add("fbo-hover-active");
+    });
+    item.addEventListener("mouseleave", () => {
+      fboRectangles[fboId].setStyle(RECT_STYLE_FBO);
+      item.classList.remove("fbo-hover-active");
+    });
+    item.addEventListener("click", () => {
+      highlightFBO(fboId);
+    });
+    item.style.cursor = "pointer";
+  });
 }
 
 // ==========================================
