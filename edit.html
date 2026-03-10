@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Airport — WDIP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body class="edit-page">
+
+  <!-- Editor Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">✈</span>
+        <span class="logo-text">WDIP</span>
+        <span class="logo-sub">editor</span>
+      </a>
+      <div class="editor-nav-actions">
+        <a href="index.html" class="editor-back-link" id="backLink">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M16 10H4m0 0l4-4m-4 4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back
+        </a>
+        <button class="editor-save-btn" id="saveBtn">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M5 3h8l4 4v8a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="currentColor" stroke-width="1.5"/><path d="M7 3v4h6V3M7 13h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Save
+        </button>
+        <button class="editor-export-btn" id="exportBtn">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 3v10m0 0l-3-3m3 3l3-3M3 14v2a1 1 0 001 1h12a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Export JSON
+        </button>
+        <button class="editor-reset-btn" id="resetBtn">Reset</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Editor Main -->
+  <main class="editor-main">
+    <!-- Airport Header -->
+    <div class="editor-airport-header" id="editorHeader">
+      <!-- Filled by JS -->
+    </div>
+
+    <div class="editor-layout">
+      <!-- Map Column -->
+      <div class="editor-map-col">
+        <div class="map-card">
+          <div class="map-card-header">
+            <h3>Airport Map</h3>
+            <div class="map-view-toggle" id="mapViewToggle">
+              <button class="map-toggle-btn active" data-view="satellite">Satellite</button>
+              <button class="map-toggle-btn" data-view="chart">FAA Chart</button>
+            </div>
+            <span class="map-hint" id="mapHint">Drag rectangles to reposition</span>
+          </div>
+          <div class="map-wrapper" id="mapWrapper">
+            <div id="editMap"></div>
+          </div>
+        </div>
+        <div class="editor-map-instructions">
+          <p><strong>Tip:</strong> Click a terminal/FBO rectangle to select it. Drag corners to resize, drag the body to move. Changes update in real-time.</p>
+        </div>
+      </div>
+
+      <!-- Panel Column -->
+      <div class="editor-panel-col">
+        <!-- Terminals -->
+        <div class="editor-section">
+          <div class="editor-section-header">
+            <h3>Terminals</h3>
+            <button class="editor-add-btn" id="addTerminalBtn">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 4v12m-6-6h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              New Terminal
+            </button>
+          </div>
+          <div class="editor-cards" id="terminalCards">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <!-- FBOs -->
+        <div class="editor-section">
+          <div class="editor-section-header">
+            <h3>FBOs — General Aviation</h3>
+            <button class="editor-add-btn" id="addFBOBtn">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 4v12m-6-6h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              New FBO
+            </button>
+          </div>
+          <div class="editor-cards" id="fboCards">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast notification -->
+  <div class="editor-toast" id="toast"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet-editable@1.2.0/src/Leaflet.Editable.js"></script>
+  <script src="edit.js"></script>
+</body>
+</html>
