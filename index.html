@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Where Do I Park — Real Gates for Flight Simmers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">✈</span>
+        <span class="logo-text">WDIP</span>
+        <span class="logo-sub">where do i park</span>
+      </a>
+      <div class="nav-links">
+        <a href="#airports" class="nav-link">Airports</a>
+        <a href="#contribute" class="nav-link">Contribute</a>
+        <a href="#about" class="nav-link">About</a>
+      </div>
+      <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="grid-pattern"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">For the flight sim community</div>
+      <h1 class="hero-title">Real Gates.<br><span class="accent">Real Ops.</span></h1>
+      <p class="hero-subtitle">Find exactly where your airline parks at any airport. Gate-accurate ops for serious flight simmers.</p>
+      <a href="#airports" class="hero-cta">
+        Find Your Gate
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value">1</span>
+          <span class="stat-label">Active Airport</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">50+</span>
+          <span class="stat-label">Airlines Mapped</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">5</span>
+          <span class="stat-label">Terminals</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Airport Selection -->
+  <section class="airports-section" id="airports">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Select Airport</span>
+        <h2 class="section-title">Choose Your Destination</h2>
+        <p class="section-desc">Select an airport to view terminal assignments, gate maps, and FBO information.</p>
+      </div>
+      <div class="airport-search-bar">
+        <svg class="airport-search-icon" width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M9 3a6 6 0 100 12A6 6 0 009 3zM17 17l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="airportSearchInput" class="airport-search-input" placeholder="Search by ICAO, IATA, or airport name..." autocomplete="off" spellcheck="false">
+      </div>
+      <div class="airport-grid" id="airportGrid">
+        <!-- Airport cards rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Results Panel -->
+  <section class="search-section" id="searchSection" style="display:none;">
+    <div class="container">
+      <div class="search-header">
+        <button class="back-btn" id="backBtn">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16 10H4m0 0l4-4m-4 4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back to airports
+        </button>
+        <div class="airport-info-header" id="airportInfoHeader">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-bar-container">
+        <div class="search-bar">
+          <div class="search-input-group">
+            <label class="search-label">Airline ICAO Code</label>
+            <input type="text" id="airlineInput" class="search-input" placeholder="e.g. DAL, AAL, JBU" maxlength="4" autocomplete="off" spellcheck="false">
+            <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+          </div>
+          <button class="search-btn" id="searchBtn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M9 3a6 6 0 100 12A6 6 0 009 3zM17 17l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Search
+          </button>
+        </div>
+        <div class="quick-airlines" id="quickAirlines">
+          <!-- Quick select buttons rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Results Grid -->
+      <div class="results-grid">
+        <!-- Airport Map -->
+        <div class="map-container">
+          <div class="map-card">
+            <div class="map-card-header">
+              <h3>Airport Map</h3>
+              <div class="map-view-toggle" id="mapViewToggle">
+                <button class="map-toggle-btn active" data-view="satellite">Satellite</button>
+                <button class="map-toggle-btn" data-view="chart">FAA Chart</button>
+              </div>
+              <span class="map-hint" id="mapHint">Click a terminal or search an airline</span>
+            </div>
+            <div class="map-wrapper" id="mapWrapper">
+              <div id="leafletMap"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel" id="infoPanel">
+          <div class="info-card" id="infoCard">
+            <div class="info-placeholder" id="infoPlaceholder">
+              <div class="info-placeholder-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><path d="M24 4l6 14h14l-11 8 4 14-13-9-13 9 4-14L4 18h14L24 4z" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/></svg>
+              </div>
+              <p>Search for an airline to see terminal and gate information</p>
+            </div>
+            <div class="info-content" id="infoContent" style="display:none;">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+
+          <!-- FBO Section -->
+          <div class="fbo-card" id="fboCard">
+            <div class="fbo-header">
+              <h3>FBOs — General Aviation</h3>
+              <span class="fbo-badge">GA Pilots</span>
+            </div>
+            <div class="fbo-list" id="fboList">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contribute Section -->
+  <section class="contribute-section" id="contribute">
+    <div class="container">
+      <div class="contribute-card">
+        <div class="contribute-content">
+          <span class="section-tag">Community</span>
+          <h2 class="section-title">Help Us Grow</h2>
+          <p class="section-desc">Know your home airport inside and out? Help the flight sim community by contributing terminal and gate data for airports around the world.</p>
+          <div class="contribute-features">
+            <div class="contribute-feature">
+              <span class="feature-icon">🗺️</span>
+              <div>
+                <strong>Add Airports</strong>
+                <p>Submit terminal maps and gate assignments for new airports</p>
+              </div>
+            </div>
+            <div class="contribute-feature">
+              <span class="feature-icon">🔄</span>
+              <div>
+                <strong>Update Data</strong>
+                <p>Keep existing airports accurate as airlines change gates</p>
+              </div>
+            </div>
+            <div class="contribute-feature">
+              <span class="feature-icon">✅</span>
+              <div>
+                <strong>Verify Info</strong>
+                <p>Confirm gate assignments from your real-world spotting</p>
+              </div>
+            </div>
+          </div>
+          <button class="contribute-btn" id="contributeBtn">
+            Add an Airport
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12m-6-6h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="contribute-visual">
+          <div class="visual-globe">
+            <div class="globe-ring ring-1"></div>
+            <div class="globe-ring ring-2"></div>
+            <div class="globe-ring ring-3"></div>
+            <div class="globe-dot dot-1"></div>
+            <div class="globe-dot dot-2"></div>
+            <div class="globe-dot dot-3"></div>
+            <div class="globe-dot dot-4"></div>
+            <div class="globe-dot dot-5"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section" id="about">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">About</span>
+        <h2 class="section-title">Built by Simmers, for Simmers</h2>
+        <p class="section-desc">Where Do I Park was created to solve a common problem in the flight sim community: knowing which terminal or gate your airline actually uses at a real airport. Whether you're flying a PMDG 737 into JFK or parking your FBW A320 at LAX, we've got you covered.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="logo-icon">✈</span>
+          <span class="logo-text">WDIP</span>
+        </div>
+        <p class="footer-note">Made with love for the flight sim community. Data may not reflect real-time changes.</p>
+        <p class="footer-copy">&copy; 2026 Where Do I Park. Not affiliated with any airline or airport authority.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Coming Soon Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-icon" id="modalIcon">🚧</div>
+      <h3 class="modal-title" id="modalTitle">Coming Soon</h3>
+      <p class="modal-desc" id="modalDesc">This feature is under development.</p>
+      <button class="modal-btn" id="modalBtn">Got it</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
