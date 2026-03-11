@@ -126,7 +126,7 @@ const RECT_STYLE_FBO_HIGHLIGHTED = {
 
 async function init() {
   try {
-    const resp = await fetch("data/airports-index.json");
+    const resp = await fetch("data/airports-index.json?v=" + Date.now());
     const index = await resp.json();
     AIRPORTS = index.airports;
   } catch (e) {
@@ -149,20 +149,27 @@ function renderAirportCards() {
       const cardClass = isActive ? "airport-card" : "airport-card coming-soon";
 
       let meta = "";
-      if (isActive && apt.terminals) {
-        const termCount = apt.terminals.filter((t) => !t.renovation).length;
-        const airlineCount = Object.keys(apt.airlines || {}).length;
+      if (isActive && (apt.terminals || apt.terminalCount)) {
+        const termCount = apt.terminals
+          ? apt.terminals.filter((t) => !t.renovation).length
+          : apt.terminalCount || 0;
+        const airlineCount = apt.airlines
+          ? Object.keys(apt.airlines).length
+          : apt.airlineCount || 0;
+        const fboCount = apt.fbos
+          ? apt.fbos.length
+          : apt.fboCount || 0;
         meta = `
           <div class="airport-card-meta">
             <div class="airport-meta-item"><span class="meta-dot"></span>${termCount} Terminals</div>
             <div class="airport-meta-item"><span class="meta-dot"></span>${airlineCount}+ Airlines</div>
-            <div class="airport-meta-item"><span class="meta-dot"></span>${(apt.fbos || []).length} FBOs</div>
+            <div class="airport-meta-item"><span class="meta-dot"></span>${fboCount} FBOs</div>
           </div>`;
       } else if (isActive) {
-        // Active but not yet loaded — show basic info
+        // Active but no metadata yet
         meta = `
           <div class="airport-card-meta">
-            <div class="airport-meta-item"><span class="meta-dot"></span>Click to load</div>
+            <div class="airport-meta-item"><span class="meta-dot"></span>Click to explore</div>
           </div>`;
       } else {
         meta = `
@@ -328,7 +335,7 @@ async function openAirport(icao) {
   // Load full data if not already loaded
   if (!AIRPORTS[icao].terminals && AIRPORTS[icao].file) {
     try {
-      const resp = await fetch(AIRPORTS[icao].file);
+      const resp = await fetch(AIRPORTS[icao].file + "?v=" + Date.now());
       const data = await resp.json();
       Object.assign(AIRPORTS[icao], data);
     } catch (e) {

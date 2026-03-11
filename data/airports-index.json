@@ -6,7 +6,10 @@
       "name": "John F. Kennedy International Airport",
       "city": "New York, NY",
       "status": "active",
-      "file": "data/kjfk.json"
+      "file": "data/kjfk.json",
+      "terminalCount": 4,
+      "airlineCount": 43,
+      "fboCount": 2
     },
     "KLGA": {
       "icao": "KLGA",

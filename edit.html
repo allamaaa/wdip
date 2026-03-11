@@ -109,15 +109,28 @@
   <div class="settings-overlay" id="settingsOverlay">
     <div class="settings-panel">
       <div class="settings-header">
-        <h3>Settings</h3>
+        <h3>Save Settings</h3>
         <button class="settings-close-btn" id="settingsClose">&times;</button>
       </div>
       <div class="settings-body">
+        <div id="settingsStatus" class="settings-status"></div>
+
+        <div class="settings-field">
+          <label>Save Worker URL</label>
+          <p class="settings-hint">A Cloudflare Worker that proxies saves to GitHub. When configured, <strong>anyone</strong> can save without a token. See <code>save-worker.js</code> in the repo for the worker code.</p>
+          <input type="url" class="settings-input" id="workerUrlInput" placeholder="https://wdip-save.yourname.workers.dev" spellcheck="false">
+        </div>
+
+        <div class="settings-divider">
+          <span>or</span>
+        </div>
+
         <div class="settings-field">
           <label>GitHub Personal Access Token</label>
-          <p class="settings-hint">Required to save changes globally. Create a token with <code>repo</code> scope at <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">github.com/settings/tokens</a>.</p>
+          <p class="settings-hint">Direct GitHub API access (saves only for you). Create a token at <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">github.com/settings/tokens</a>.</p>
           <input type="password" class="settings-input" id="ghTokenInput" placeholder="ghp_xxxxxxxxxxxx" spellcheck="false">
         </div>
+
         <button class="settings-save-btn" id="settingsSave">Save Settings</button>
       </div>
     </div>

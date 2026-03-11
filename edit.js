@@ -18,7 +18,12 @@ let hasUnsavedChanges = false;
 let nextTermId = 100;
 let nextFboId = 100;
 
-// GitHub config
+// Save API — set this to your Cloudflare Worker URL for public saves
+// When set, anyone can save without needing a GitHub token.
+// Example: "https://wdip-save.yourname.workers.dev"
+const SAVE_API_URL = "";
+
+// Fallback GitHub config (only used when SAVE_API_URL is empty)
 const GITHUB_REPO = "allamaaa/wdip";
 
 // ==========================================
@@ -56,7 +61,7 @@ async function init() {
 async function loadAirportData(code) {
   // Try loading from GitHub first
   try {
-    const resp = await fetch(`data/${code.toLowerCase()}.json`);
+    const resp = await fetch(`data/${code.toLowerCase()}.json?v=${Date.now()}`);
     if (resp.ok) {
       return await resp.json();
     }
@@ -710,10 +715,12 @@ function addFBO() {
 // ==========================================
 
 async function saveData() {
+  const workerUrl = SAVE_API_URL || localStorage.getItem("wdip_save_url");
   const token = localStorage.getItem("wdip_gh_token");
-  if (!token) {
+
+  if (!workerUrl && !token) {
     showSettingsPanel();
-    showToast("Please set your GitHub token first", true);
+    showToast("Configure a Save Worker URL or GitHub token first", true);
     return;
   }
 
@@ -722,54 +729,75 @@ async function saveData() {
   saveBtn.disabled = true;
 
   try {
-    const filePath = `where-do-i-park/data/${icao.toLowerCase()}.json`;
-    const content = JSON.stringify(airportData, null, 2);
-    const encoded = btoa(unescape(encodeURIComponent(content)));
-
-    // Get current file SHA
-    let sha = null;
-    try {
-      const getResp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`, {
-        headers: { Authorization: `token ${token}` },
-      });
-      if (getResp.ok) {
-        const fileData = await getResp.json();
-        sha = fileData.sha;
-      }
-    } catch (e) {
-      // File might not exist yet, that's okay
-    }
-
-    // PUT to update/create file
-    const body = {
-      message: `Update ${icao} airport data`,
-      content: encoded,
-    };
-    if (sha) body.sha = sha;
-
-    const putResp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `token ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (!putResp.ok) {
-      const err = await putResp.json();
-      throw new Error(err.message || "GitHub API error");
+    if (workerUrl) {
+      await saveViaWorker(workerUrl);
+    } else {
+      await saveViaGitHub(token);
     }
 
     hasUnsavedChanges = false;
     updateSaveButtonState();
-    showToast("Saved to GitHub!");
+    showToast("Saved successfully!");
   } catch (e) {
     console.error("Save failed", e);
     showToast(`Save failed: ${e.message}`, true);
   } finally {
     saveBtn.textContent = "Save";
     saveBtn.disabled = false;
+  }
+}
+
+async function saveViaWorker(url) {
+  const resp = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ icao: icao.toUpperCase(), data: airportData }),
+  });
+
+  const result = await resp.json();
+  if (!result.ok) {
+    throw new Error(result.message || "Save worker error");
+  }
+}
+
+async function saveViaGitHub(token) {
+  const filePath = `where-do-i-park/data/${icao.toLowerCase()}.json`;
+  const content = JSON.stringify(airportData, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+
+  // Get current file SHA
+  let sha = null;
+  try {
+    const getResp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`, {
+      headers: { Authorization: `token ${token}` },
+    });
+    if (getResp.ok) {
+      const fileData = await getResp.json();
+      sha = fileData.sha;
+    }
+  } catch (e) {
+    // File might not exist yet
+  }
+
+  // PUT to update/create file
+  const body = {
+    message: `Update ${icao} airport data`,
+    content: encoded,
+  };
+  if (sha) body.sha = sha;
+
+  const putResp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `token ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!putResp.ok) {
+    const err = await putResp.json();
+    throw new Error(err.message || "GitHub API error");
   }
 }
 
@@ -798,9 +826,13 @@ function resetToDefaults() {
 
 function showSettingsPanel() {
   const overlay = document.getElementById("settingsOverlay");
+  const urlInput = document.getElementById("workerUrlInput");
   const tokenInput = document.getElementById("ghTokenInput");
-  const saved = localStorage.getItem("wdip_gh_token") || "";
-  tokenInput.value = saved;
+  if (urlInput) urlInput.value = localStorage.getItem("wdip_save_url") || "";
+  if (tokenInput) tokenInput.value = localStorage.getItem("wdip_gh_token") || "";
+
+  // Show connection status
+  updateSettingsStatus();
   overlay.classList.add("active");
 }
 
@@ -808,15 +840,49 @@ function hideSettingsPanel() {
   document.getElementById("settingsOverlay").classList.remove("active");
 }
 
+function updateSettingsStatus() {
+  const statusEl = document.getElementById("settingsStatus");
+  if (!statusEl) return;
+
+  const workerUrl = SAVE_API_URL || localStorage.getItem("wdip_save_url");
+  const token = localStorage.getItem("wdip_gh_token");
+
+  if (SAVE_API_URL) {
+    statusEl.innerHTML = '<span class="status-connected">✓ Save Worker is configured globally</span>';
+  } else if (workerUrl) {
+    statusEl.innerHTML = '<span class="status-connected">✓ Using custom Worker URL</span>';
+  } else if (token) {
+    statusEl.innerHTML = '<span class="status-connected">✓ Using GitHub token (local only)</span>';
+  } else {
+    statusEl.innerHTML = '<span class="status-disconnected">✗ Not configured — saves won\'t work</span>';
+  }
+}
+
 function saveSettings() {
-  const token = document.getElementById("ghTokenInput").value.trim();
+  const urlInput = document.getElementById("workerUrlInput");
+  const tokenInput = document.getElementById("ghTokenInput");
+
+  const url = urlInput ? urlInput.value.trim() : "";
+  const token = tokenInput ? tokenInput.value.trim() : "";
+
+  if (url) {
+    localStorage.setItem("wdip_save_url", url);
+  } else {
+    localStorage.removeItem("wdip_save_url");
+  }
+
   if (token) {
     localStorage.setItem("wdip_gh_token", token);
-    showToast("GitHub token saved!");
   } else {
     localStorage.removeItem("wdip_gh_token");
-    showToast("GitHub token cleared");
   }
+
+  if (url || token) {
+    showToast("Settings saved!");
+  } else {
+    showToast("Settings cleared");
+  }
+
   hideSettingsPanel();
 }
 

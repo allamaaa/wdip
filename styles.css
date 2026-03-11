@@ -2254,6 +2254,42 @@ body {
   border-color: var(--accent);
 }
 
+.settings-status {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.status-connected {
+  color: var(--green);
+}
+
+.status-disconnected {
+  color: var(--red);
+}
+
+.settings-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.settings-divider::before,
+.settings-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
 .settings-save-btn {
   width: 100%;
   padding: 10px;
