@@ -97,16 +97,16 @@
     },
     {
       "id": "T100",
-      "name": "Cargo Area D",
-      "gates": "1-5",
+      "name": "Cargo Area E",
+      "gates": "N/A",
       "bounds": [
         [
-          40.657885051688005,
-          -73.78784874100131
+          40.65450368260518,
+          -73.78048896789552
         ],
         [
-          40.66166147011236,
-          -73.78119686264438
+          40.65961060677238,
+          -73.77206009484671
         ]
       ]
     },
@@ -137,6 +137,21 @@
         [
           40.664233301369194,
           -73.7953805923462
+        ]
+      ]
+    },
+    {
+      "id": "T100",
+      "name": "New Terminal",
+      "gates": "TBD",
+      "bounds": [
+        [
+          40.65874082790671,
+          -73.78552301025393
+        ],
+        [
+          40.66074082790671,
+          -73.78352301025392
         ]
       ]
     }
@@ -357,11 +372,6 @@
       "icao": "TAM",
       "terminal": "T8"
     },
-    "FDX": {
-      "name": "FedEx Express",
-      "icao": "FDX",
-      "terminal": "T100"
-    },
     "CPA_C": {
       "name": "Cathay Pacific (Cargo)",
       "icao": "CPA",
@@ -391,6 +401,11 @@
       "name": "Alaska Airlines",
       "icao": "ASA",
       "terminal": "T5"
+    },
+    "DHK": {
+      "name": "DHL Air UK",
+      "icao": "DHK",
+      "terminal": "T100"
     }
   },
   "quickAirlines": [
