@@ -78,7 +78,7 @@ export default {
     }
 
     const repo = env.GITHUB_REPO || "allamaaa/wdip";
-    const filePath = `where-do-i-park/data/${icao.toLowerCase()}.json`;
+    const filePath = `data/${icao.toLowerCase()}.json`;
     const content = JSON.stringify(data, null, 2);
     const encoded = btoa(unescape(encodeURIComponent(content)));
 

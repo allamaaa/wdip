@@ -18,6 +18,12 @@ let hasUnsavedChanges = false;
 let nextTermId = 100;
 let nextFboId = 100;
 
+// On GitHub Pages, fetch from raw.githubusercontent.com for instant updates after saves.
+const _isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const DATA_BASE = _isLocal
+  ? ""
+  : "https://raw.githubusercontent.com/allamaaa/wdip/main/";
+
 // Save API — set this to your Cloudflare Worker URL for public saves
 // When set, anyone can save without needing a GitHub token.
 // Example: "https://wdip-save.yourname.workers.dev"
@@ -61,7 +67,7 @@ async function init() {
 async function loadAirportData(code) {
   // Try loading from GitHub first
   try {
-    const resp = await fetch(`data/${code.toLowerCase()}.json?v=${Date.now()}`);
+    const resp = await fetch(`${DATA_BASE}data/${code.toLowerCase()}.json?v=${Date.now()}`);
     if (resp.ok) {
       return await resp.json();
     }
@@ -761,7 +767,7 @@ async function saveViaWorker(url) {
 }
 
 async function saveViaGitHub(token) {
-  const filePath = `where-do-i-park/data/${icao.toLowerCase()}.json`;
+  const filePath = `data/${icao.toLowerCase()}.json`;
   const content = JSON.stringify(airportData, null, 2);
   const encoded = btoa(unescape(encodeURIComponent(content)));
 

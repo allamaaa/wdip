@@ -6,6 +6,13 @@
 // DATA (loaded async)
 // ==========================================
 
+// On GitHub Pages, fetch from raw.githubusercontent.com for instant updates after saves.
+// On localhost, use relative paths for development.
+const _isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const DATA_BASE = _isLocal
+  ? ""
+  : "https://raw.githubusercontent.com/allamaaa/wdip/main/";
+
 let AIRPORTS = {};
 
 // ==========================================
@@ -126,7 +133,7 @@ const RECT_STYLE_FBO_HIGHLIGHTED = {
 
 async function init() {
   try {
-    const resp = await fetch("data/airports-index.json?v=" + Date.now());
+    const resp = await fetch(DATA_BASE + "data/airports-index.json?v=" + Date.now());
     const index = await resp.json();
     AIRPORTS = index.airports;
   } catch (e) {
@@ -335,7 +342,7 @@ async function openAirport(icao) {
   // Load full data if not already loaded
   if (!AIRPORTS[icao].terminals && AIRPORTS[icao].file) {
     try {
-      const resp = await fetch(AIRPORTS[icao].file + "?v=" + Date.now());
+      const resp = await fetch(DATA_BASE + AIRPORTS[icao].file + "?v=" + Date.now());
       const data = await resp.json();
       Object.assign(AIRPORTS[icao], data);
     } catch (e) {
