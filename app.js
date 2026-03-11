@@ -6,12 +6,8 @@
 // DATA (loaded async)
 // ==========================================
 
-// On GitHub Pages, fetch from raw.githubusercontent.com for instant updates after saves.
-// On localhost, use relative paths for development.
-const _isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
-const DATA_BASE = _isLocal
-  ? ""
-  : "https://raw.githubusercontent.com/allamaaa/wdip/main/";
+// Always fetch data from the GitHub repo so changes show up instantly after saves.
+const DATA_BASE = "https://raw.githubusercontent.com/allamaaa/wdip/main/";
 
 let AIRPORTS = {};
 

@@ -18,11 +18,8 @@ let hasUnsavedChanges = false;
 let nextTermId = 100;
 let nextFboId = 100;
 
-// On GitHub Pages, fetch from raw.githubusercontent.com for instant updates after saves.
-const _isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
-const DATA_BASE = _isLocal
-  ? ""
-  : "https://raw.githubusercontent.com/allamaaa/wdip/main/";
+// Always fetch data from the GitHub repo so changes show up instantly after saves.
+const DATA_BASE = "https://raw.githubusercontent.com/allamaaa/wdip/main/";
 
 // Save API — set this to your Cloudflare Worker URL for public saves
 // When set, anyone can save without needing a GitHub token.
