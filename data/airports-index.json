@@ -24,6 +24,13 @@
       "name": "Philadelphia International Airport",
       "city": "Philadelphia, PA",
       "status": "coming_soon"
+    },
+    "KEWR": {
+      "icao": "KEWR",
+      "iata": "EWR",
+      "name": "Newark Liberty International Airport",
+      "city": "Newark, NJ",
+      "status": "coming_soon"
     }
   }
 }
