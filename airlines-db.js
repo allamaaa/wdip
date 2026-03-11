@@ -15,14 +15,19 @@ const AIRLINES_DB = {
   ASA: { name: "Alaska Airlines", icao: "ASA", callsign: "ALASKA" },
   HAL: { name: "Hawaiian Airlines", icao: "HAL", callsign: "HAWAIIAN" },
   KAP: { name: "Cape Air", icao: "KAP", callsign: "CAIR" },
-  SKW: { name: "SkyWest Airlines", icao: "SKW", callsign: "SKYWEST" },
-  RPA: { name: "Republic Airways", icao: "RPA", callsign: "BRICKYARD" },
-  ENY: { name: "Envoy Air", icao: "ENY", callsign: "ENVOY" },
-  PDT: { name: "Piedmont Airlines", icao: "PDT", callsign: "PIEDMONT" },
-  PSA: { name: "PSA Airlines", icao: "PSA", callsign: "BLUE STREAK" },
+  SKW_A: { name: "SkyWest Airlines (American Eagle)", icao: "SKW", callsign: "SKYWEST" },
+  SKW_U: { name: "SkyWest Airlines (United Express)", icao: "SKW", callsign: "SKYWEST" },
+  SKW_D: { name: "SkyWest Airlines (Delta", icao: "SKW", callsign: "SKYWEST" },
+  SKW_AS: { name: "SkyWest Airlines (Alaska Airlines)", icao: "SKW", callsign: "SKYWEST" }, 
+  RPA_A: { name: "Republic Airways (American Eagle)", icao: "RPA", callsign: "BRICKYARD" },
+  RPA_U: { name: "Republic Airways (United Express)", icao: "RPA", callsign: "BRICKYARD" },
+  RPA_D: { name: "Republic Airways (Delta Connection)", icao: "RPA", callsign: "BRICKYARD" }, 
+  ENY: { name: "Envoy Air (American Eagle)", icao: "ENY", callsign: "ENVOY" },
+  PDT: { name: "Piedmont Airlines (American Eagle)", icao: "PDT", callsign: "PIEDMONT" },
+  PSA: { name: "PSA Airlines (American Eagle)", icao: "PSA", callsign: "BLUE STREAK" },
   ACA: { name: "Air Canada", icao: "ACA", callsign: "AIR CANADA" },
   WJA: { name: "WestJet", icao: "WJA", callsign: "WESTJET" },
-  TSC: { name: "Air Transat", icao: "TSC", callsign: "TRANSAT" },
+  TSC: { name: "Air Transat", icao: "TSC", callsign: "AIR TRANSAT" },
   POE: { name: "Porter Airlines", icao: "POE", callsign: "PORTER" },
   AMX: { name: "Aeromexico", icao: "AMX", callsign: "AEROMEXICO" },
   VIV: { name: "Viva Aerobus", icao: "VIV", callsign: "AEROENLACE" },
@@ -35,7 +40,7 @@ const AIRLINES_DB = {
   ABX: { name: "ABX Air", icao: "ABX", callsign: "ABEX", cargo: true },
   GTI: { name: "Atlas Air", icao: "GTI", callsign: "GIANT", cargo: true },
   PAC: { name: "Polar Air Cargo", icao: "PAC", callsign: "POLAR", cargo: true },
-  KFS: { name: "Kalitta Air", icao: "KFS", callsign: "CONNIE", cargo: true },
+  KFS: { name: "Kalitta Air", icao: "CKS", callsign: "CONNIE", cargo: true },
 
   // --- Europe ---
   BAW: { name: "British Airways", icao: "BAW", callsign: "SPEEDBIRD" },
@@ -75,7 +80,7 @@ const AIRLINES_DB = {
   TAY: { name: "ASL Airlines Belgium", icao: "TAY", callsign: "QUALITY", cargo: true },
   BCS: { name: "European Air Transport (DHL)", icao: "BCS", callsign: "POSTMAN", cargo: true },
   DHK: { name: "DHL Air UK", icao: "DHK", callsign: "WORLD EXPRESS", cargo: true },
-  GEC: { name: "Lufthansa Cargo", icao: "BCS", callsign: "LUFTHANSA CARGO", cargo: true }, 
+  GEC: { name: "Lufthansa Cargo", icao: "GEC", callsign: "LUFTHANSA CARGO", cargo: true }, 
 
   // --- Middle East ---
   UAE: { name: "Emirates", icao: "UAE", callsign: "EMIRATES" },
@@ -114,6 +119,7 @@ const AIRLINES_DB = {
   CAL: { name: "China Airlines", icao: "CAL", callsign: "DYNASTY" },
   CAL_C: { name: "China Airlines Cargo", icao: "CAL", callsign: "DYNASTY", cargo: true },
   EVA: { name: "EVA Air", icao: "EVA", callsign: "EVA" },
+  EVA: { name: "EVA Air Cargo", icao: "EVA", callsign: "EVA" }, 
   THA: { name: "Thai Airways", icao: "THA", callsign: "THAI" },
   MAS: { name: "Malaysia Airlines", icao: "MAS", callsign: "MALAYSIAN" },
   GIA: { name: "Garuda Indonesia", icao: "GIA", callsign: "INDONESIA" },
@@ -133,6 +139,7 @@ const AIRLINES_DB = {
 
   // --- Asia Cargo ---
   NCA: { name: "Nippon Cargo Airlines", icao: "NCA", callsign: "NIPPON CARGO", cargo: true },
+  CSS: { name: "S.F Airlines Cargo", icao: "CSS", callsign: "SHUN FENG", cargo: true }, 
 
   // --- South America ---
   AVA: { name: "Avianca", icao: "AVA", callsign: "AVIANCA" },
