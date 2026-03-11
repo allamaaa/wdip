@@ -143,7 +143,8 @@ const AIRLINES_DB = {
   AKJ: { name: "Air India Express", icao: "AKJ", callsign: "EXPRESS INDIA" },
   MXY: { name: "Breeze Airways", icao: "MXY", callsign: "MOXY" },
   EDV: { name: "Endeavor Air (Delta Connection)", icao: "EDV", callsign: "ENDEAVOR" },
-  EJA: { name: "NetJets", icao: "EJA", callsign: "EXECJET" }
+  EJA: { name: "NetJets", icao: "EJA", callsign: "EXECJET" },
+  LXJ: { name: "FlexJet", icao: "LXJ", callsign: "FLEXJET" }
 };
 
 /**
