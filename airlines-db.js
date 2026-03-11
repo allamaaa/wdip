@@ -119,7 +119,7 @@ const AIRLINES_DB = {
   CAL: { name: "China Airlines", icao: "CAL", callsign: "DYNASTY" },
   CAL_C: { name: "China Airlines Cargo", icao: "CAL", callsign: "DYNASTY", cargo: true },
   EVA: { name: "EVA Air", icao: "EVA", callsign: "EVA" },
-  EVA: { name: "EVA Air Cargo", icao: "EVA", callsign: "EVA" }, 
+  EVA_C: { name: "EVA Air Cargo", icao: "EVA", callsign: "EVA" }, 
   THA: { name: "Thai Airways", icao: "THA", callsign: "THAI" },
   MAS: { name: "Malaysia Airlines", icao: "MAS", callsign: "MALAYSIAN" },
   GIA: { name: "Garuda Indonesia", icao: "GIA", callsign: "INDONESIA" },
