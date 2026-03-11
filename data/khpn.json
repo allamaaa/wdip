@@ -1,0 +1,20 @@
+{
+  "icao": "KHPN",
+  "iata": "HPN",
+  "name": "Westchester County Airport",
+  "city": "White Plains, NY",
+  "elevation": "",
+  "status": "active",
+  "runways": [],
+  "map": {
+    "center": [
+      41.06802781517303,
+      -73.70834827423097
+    ],
+    "zoom": 15
+  },
+  "terminals": [],
+  "airlines": {},
+  "quickAirlines": [],
+  "fbos": []
+}
