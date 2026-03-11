@@ -17,7 +17,7 @@
     {
       "id": "T101",
       "name": "Main Terminal",
-      "gates": "N/A",
+      "gates": "1-6",
       "bounds": [
         [
           41.06710568636443,
@@ -32,7 +32,7 @@
     {
       "id": "T102",
       "name": "NetJets",
-      "gates": "TBD",
+      "gates": "FBO",
       "bounds": [
         [
           41.07479778592109,
@@ -47,7 +47,7 @@
     {
       "id": "T103",
       "name": "Flex Jet",
-      "gates": "TBD",
+      "gates": "FBO",
       "bounds": [
         [
           41.065560687184124,
@@ -70,6 +70,16 @@
       "name": "Envoy Air (American Eagle)",
       "icao": "ENY",
       "terminal": "T101"
+    },
+    "LXJ": {
+      "name": "FlexJet",
+      "icao": "LXJ",
+      "terminal": "T103"
+    },
+    "EJA": {
+      "name": "NetJets",
+      "icao": "EJA",
+      "terminal": "T102"
     }
   },
   "quickAirlines": [],
