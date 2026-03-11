@@ -73,7 +73,9 @@ const AIRLINES_DB = {
   CLX: { name: "Cargolux", icao: "CLX", callsign: "CARGOLUX", cargo: true },
   BOX: { name: "AeroLogic", icao: "BOX", callsign: "GERMAN CARGO", cargo: true },
   TAY: { name: "ASL Airlines Belgium", icao: "TAY", callsign: "QUALITY", cargo: true },
-  BCS_C: { name: "European Air Transport (DHL)", icao: "BCS", callsign: "EUROTRANS", cargo: true },
+  BCS: { name: "European Air Transport (DHL)", icao: "BCS", callsign: "POSTMAN", cargo: true },
+  DHK: { name: "DHL Air UK", icao: "DHK", callsign: "WORLD EXPRESS", cargo: true },
+  GEC: { name: "Lufthansa Cargo", icao: "BCS", callsign: "LUFTHANSA CARGO", cargo: true }, 
 
   // --- Middle East ---
   UAE: { name: "Emirates", icao: "UAE", callsign: "EMIRATES" },
