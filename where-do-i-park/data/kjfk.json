@@ -1,0 +1,419 @@
+{
+  "icao": "KJFK",
+  "iata": "JFK",
+  "name": "John F. Kennedy International Airport",
+  "city": "New York, NY",
+  "elevation": "13 ft",
+  "status": "active",
+  "runways": [
+    "4L/22R",
+    "4R/22L",
+    "13L/31R",
+    "13R/31L"
+  ],
+  "map": {
+    "center": [
+      40.6413,
+      -73.7781
+    ],
+    "zoom": 15
+  },
+  "terminals": [
+    {
+      "id": "T1",
+      "name": "Terminal 1",
+      "gates": "1 – 11",
+      "bounds": [
+        [
+          40.64000942809261,
+          -73.7947553693665
+        ],
+        [
+          40.64399850662424,
+          -73.79025220870973
+        ]
+      ]
+    },
+    {
+      "id": "T4",
+      "name": "Terminal 4",
+      "gates": "A1 – A7, B20 – B47",
+      "bounds": [
+        [
+          40.634668574229764,
+          -73.78446051817757
+        ],
+        [
+          40.64375428417745,
+          -73.77666950225831
+        ]
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "Terminal 5",
+      "gates": "1 – 32",
+      "bounds": [
+        [
+          40.644392652509325,
+          -73.77894401550294
+        ],
+        [
+          40.648833927053836,
+          -73.77160030531063
+        ]
+      ]
+    },
+    {
+      "id": "T7",
+      "name": "Terminal 7",
+      "gates": "Under Renovation",
+      "renovation": false,
+      "bounds": [
+        [
+          40.64788966372356,
+          -73.78499507904054
+        ],
+        [
+          40.65130848480564,
+          -73.78061771392824
+        ]
+      ]
+    },
+    {
+      "id": "T8",
+      "name": "Terminal 8",
+      "gates": "1 – 50",
+      "bounds": [
+        [
+          40.64600109698023,
+          -73.79709374896635
+        ],
+        [
+          40.65150384071989,
+          -73.78684043884279
+        ]
+      ]
+    },
+    {
+      "id": "T100",
+      "name": "Cargo Area D",
+      "gates": "1-5",
+      "bounds": [
+        [
+          40.657657338353886,
+          -73.78760228723364
+        ],
+        [
+          40.66172668227023,
+          -73.78144393533545
+        ]
+      ]
+    },
+    {
+      "id": "T101",
+      "name": "Cargo Area C",
+      "gates": "N/A",
+      "bounds": [
+        [
+          40.65215502297003,
+          -73.79728216154737
+        ],
+        [
+          40.66442861943864,
+          -73.79495143890382
+        ]
+      ]
+    },
+    {
+      "id": "T102",
+      "name": "Cargo Area B",
+      "gates": "N/A",
+      "bounds": [
+        [
+          40.65117824721173,
+          -73.8052211532593
+        ],
+        [
+          40.658113045456474,
+          -73.79834175109865
+        ]
+      ]
+    }
+  ],
+  "airlines": {
+    "AFR": {
+      "name": "Air France",
+      "icao": "AFR",
+      "terminal": "T1"
+    },
+    "AUA": {
+      "name": "Austrian Airlines",
+      "icao": "AUA",
+      "terminal": "T1"
+    },
+    "ITY": {
+      "name": "ITA Airways",
+      "icao": "ITY",
+      "terminal": "T1"
+    },
+    "KAL": {
+      "name": "Korean Air",
+      "icao": "KAL",
+      "terminal": "T1"
+    },
+    "DLH": {
+      "name": "Lufthansa",
+      "icao": "DLH",
+      "terminal": "T1"
+    },
+    "THY": {
+      "name": "Turkish Airlines",
+      "icao": "THY",
+      "terminal": "T1"
+    },
+    "AZA": {
+      "name": "Alitalia",
+      "icao": "AZA",
+      "terminal": "T1"
+    },
+    "NAX": {
+      "name": "Norwegian",
+      "icao": "NAX",
+      "terminal": "T1"
+    },
+    "TAP": {
+      "name": "TAP Air Portugal",
+      "icao": "TAP",
+      "terminal": "T1"
+    },
+    "PHO": {
+      "name": "Philippines AirAsia",
+      "icao": "PHO",
+      "terminal": "T1"
+    },
+    "DAL": {
+      "name": "Delta Air Lines",
+      "icao": "DAL",
+      "terminal": "T4"
+    },
+    "AMX": {
+      "name": "Aeromexico",
+      "icao": "AMX",
+      "terminal": "T4"
+    },
+    "AIC": {
+      "name": "Air India",
+      "icao": "AIC",
+      "terminal": "T4"
+    },
+    "AVA": {
+      "name": "Avianca",
+      "icao": "AVA",
+      "terminal": "T4"
+    },
+    "CAL": {
+      "name": "China Airlines",
+      "icao": "CAL",
+      "terminal": "T4"
+    },
+    "CES": {
+      "name": "China Eastern",
+      "icao": "CES",
+      "terminal": "T4"
+    },
+    "CSN": {
+      "name": "China Southern",
+      "icao": "CSN",
+      "terminal": "T4"
+    },
+    "UAE": {
+      "name": "Emirates",
+      "icao": "UAE",
+      "terminal": "T4"
+    },
+    "ETD": {
+      "name": "Etihad Airways",
+      "icao": "ETD",
+      "terminal": "T4"
+    },
+    "ELY": {
+      "name": "El Al",
+      "icao": "ELY",
+      "terminal": "T4"
+    },
+    "KLM": {
+      "name": "KLM",
+      "icao": "KLM",
+      "terminal": "T4"
+    },
+    "KQA": {
+      "name": "Kenya Airways",
+      "icao": "KQA",
+      "terminal": "T4"
+    },
+    "SIA": {
+      "name": "Singapore Airlines",
+      "icao": "SIA",
+      "terminal": "T4"
+    },
+    "VIR": {
+      "name": "Virgin Atlantic",
+      "icao": "VIR",
+      "terminal": "T4"
+    },
+    "CXA": {
+      "name": "XiamenAir",
+      "icao": "CXA",
+      "terminal": "T4"
+    },
+    "SVA": {
+      "name": "Saudia",
+      "icao": "SVA",
+      "terminal": "T4"
+    },
+    "ARG": {
+      "name": "Aerolineas Argentinas",
+      "icao": "ARG",
+      "terminal": "T4"
+    },
+    "JBU": {
+      "name": "JetBlue Airways",
+      "icao": "JBU",
+      "terminal": "T5"
+    },
+    "HAL": {
+      "name": "Hawaiian Airlines",
+      "icao": "HAL",
+      "terminal": "T5"
+    },
+    "KAP": {
+      "name": "Cape Air",
+      "icao": "KAP",
+      "terminal": "T5"
+    },
+    "AAL": {
+      "name": "American Airlines",
+      "icao": "AAL",
+      "terminal": "T8"
+    },
+    "BAW": {
+      "name": "British Airways",
+      "icao": "BAW",
+      "terminal": "T8"
+    },
+    "CPA": {
+      "name": "Cathay Pacific",
+      "icao": "CPA",
+      "terminal": "T8"
+    },
+    "FIN": {
+      "name": "Finnair",
+      "icao": "FIN",
+      "terminal": "T8"
+    },
+    "IBE": {
+      "name": "Iberia",
+      "icao": "IBE",
+      "terminal": "T8"
+    },
+    "JAL": {
+      "name": "Japan Airlines",
+      "icao": "JAL",
+      "terminal": "T8"
+    },
+    "QFA": {
+      "name": "Qantas",
+      "icao": "QFA",
+      "terminal": "T8"
+    },
+    "QTR": {
+      "name": "Qatar Airways",
+      "icao": "QTR",
+      "terminal": "T8"
+    },
+    "RAM": {
+      "name": "Royal Air Maroc",
+      "icao": "RAM",
+      "terminal": "T8"
+    },
+    "RJA": {
+      "name": "Royal Jordanian",
+      "icao": "RJA",
+      "terminal": "T8"
+    },
+    "ICE": {
+      "name": "Icelandair",
+      "icao": "ICE",
+      "terminal": "T8"
+    },
+    "LOT": {
+      "name": "LOT Polish Airlines",
+      "icao": "LOT",
+      "terminal": "T8"
+    },
+    "TAM": {
+      "name": "LATAM Airlines",
+      "icao": "TAM",
+      "terminal": "T8"
+    },
+    "FDX": {
+      "name": "FedEx Express",
+      "icao": "FDX",
+      "terminal": "T100"
+    },
+    "UPS": {
+      "name": "UPS Airlines",
+      "icao": "UPS",
+      "terminal": "T101"
+    },
+    "BOX": {
+      "name": "AeroLogic",
+      "icao": "BOX",
+      "terminal": "T102"
+    },
+    "CPA_C": {
+      "name": "Cathay Pacific (Cargo)",
+      "icao": "CPA",
+      "terminal": "T102"
+    },
+    "GTI": {
+      "name": "Atlas Air",
+      "icao": "GTI",
+      "terminal": "T102"
+    },
+    "EIN": {
+      "name": "Aer Lingus",
+      "icao": "EIN",
+      "terminal": "T5"
+    }
+  },
+  "quickAirlines": [
+    "DAL",
+    "AAL",
+    "JBU",
+    "UAE",
+    "BAW",
+    "DLH",
+    "AFR",
+    "SIA"
+  ],
+  "fbos": [
+    {
+      "id": "FBO1",
+      "name": "Modern Aviation",
+      "location": "Building 141, North Boundary Road",
+      "phone": "(718) 751-1200",
+      "bounds": [
+        [
+          40.64878963291915,
+          -73.81254919157136
+        ],
+        [
+          40.65128763992069,
+          -73.80859601598114
+        ]
+      ]
+    }
+  ]
+}
