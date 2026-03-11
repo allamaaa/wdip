@@ -31,6 +31,17 @@
       "name": "Newark Liberty International Airport",
       "city": "Newark, NJ",
       "status": "coming_soon"
+    },
+    "KHPN": {
+      "icao": "KHPN",
+      "iata": "HPN",
+      "name": "Westchester County Airport",
+      "city": "White Plains, NY",
+      "status": "active",
+      "file": "data/khpn.json",
+      "terminalCount": 0,
+      "airlineCount": 0,
+      "fboCount": 0
     }
   }
 }
