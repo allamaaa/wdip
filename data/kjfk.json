@@ -96,47 +96,62 @@
       ]
     },
     {
-      "id": "T101",
-      "name": "Cargo Area B",
-      "gates": "N/A",
-      "bounds": [
-        [
-          40.64998167742155,
-          -73.8047921171301
-        ],
-        [
-          40.65794106367792,
-          -73.7984597682953
-        ]
-      ]
-    },
-    {
       "id": "T102",
-      "name": "Cargo Area C",
-      "gates": "N/A",
+      "name": "Cargo D",
+      "gates": "1-5",
       "bounds": [
         [
-          40.6526759641946,
-          -73.79736929225618
+          40.65677823420846,
+          -73.78855705261232
         ],
         [
-          40.664233301369194,
-          -73.7953805923462
+          40.66247541300526,
+          -73.78233432769777
         ]
       ]
     },
     {
-      "id": "T100",
-      "name": "Cargo Area D",
+      "id": "T103",
+      "name": "Cargo E",
+      "gates": "",
+      "bounds": [
+        [
+          40.654206205520424,
+          -73.78061771392824
+        ],
+        [
+          40.65889438598962,
+          -73.7725067138672
+        ]
+      ]
+    },
+    {
+      "id": "T104",
+      "name": "Cargo B",
       "gates": "N/A",
       "bounds": [
         [
-          40.65762470297605,
-          -73.78758121679881
+          40.647987346756636,
+          -73.80529403686525
         ],
         [
-          40.66223755236764,
-          -73.78151893615724
+          40.65821071352359,
+          -73.79898548126222
+        ]
+      ]
+    },
+    {
+      "id": "T105",
+      "name": "Cargo C",
+      "gates": "N/A",
+      "bounds": [
+        [
+          40.6529689918461,
+          -73.79702674619072
+        ],
+        [
+          40.66400542956531,
+          -73.79499435424806
         ]
       ]
     }
@@ -270,7 +285,7 @@
     "ARG": {
       "name": "Aerolineas Argentinas",
       "icao": "ARG",
-      "terminal": "T4"
+      "terminal": "T7"
     },
     "JBU": {
       "name": "JetBlue Airways",
@@ -295,7 +310,7 @@
     "BAW": {
       "name": "British Airways",
       "icao": "BAW",
-      "terminal": "T8"
+      "terminal": "T7"
     },
     "CPA": {
       "name": "Cathay Pacific",
@@ -310,12 +325,7 @@
     "IBE": {
       "name": "Iberia",
       "icao": "IBE",
-      "terminal": "T8"
-    },
-    "JAL": {
-      "name": "Japan Airlines",
-      "icao": "JAL",
-      "terminal": "T8"
+      "terminal": "T7"
     },
     "QFA": {
       "name": "Qantas",
@@ -325,7 +335,7 @@
     "QTR": {
       "name": "Qatar Airways",
       "icao": "QTR",
-      "terminal": "T8"
+      "terminal": "T7"
     },
     "RAM": {
       "name": "Royal Air Maroc",
@@ -340,37 +350,17 @@
     "ICE": {
       "name": "Icelandair",
       "icao": "ICE",
-      "terminal": "T8"
+      "terminal": "T7"
     },
     "LOT": {
       "name": "LOT Polish Airlines",
       "icao": "LOT",
-      "terminal": "T8"
+      "terminal": "T7"
     },
     "TAM": {
       "name": "LATAM Airlines",
       "icao": "TAM",
-      "terminal": "T8"
-    },
-    "CPA_C": {
-      "name": "Cathay Pacific (Cargo)",
-      "icao": "CPA",
-      "terminal": "T101"
-    },
-    "BOX": {
-      "name": "AeroLogic",
-      "icao": "BOX",
-      "terminal": "T101"
-    },
-    "GTI": {
-      "name": "Atlas Air",
-      "icao": "GTI",
-      "terminal": "T101"
-    },
-    "UPS": {
-      "name": "UPS Airlines",
-      "icao": "UPS",
-      "terminal": "T102"
+      "terminal": "T4"
     },
     "EIN": {
       "name": "Aer Lingus",
@@ -385,12 +375,82 @@
     "FDX": {
       "name": "FedEx Express",
       "icao": "FDX",
-      "terminal": "T100"
+      "terminal": "T102"
+    },
+    "KFS": {
+      "name": "Kalitta Air",
+      "icao": "CKS",
+      "terminal": "T103"
+    },
+    "DHK": {
+      "name": "DHL Air UK",
+      "icao": "DHK",
+      "terminal": "T103"
+    },
+    "CSS": {
+      "name": "S.F Airlines Cargo",
+      "icao": "CSS",
+      "terminal": "T103"
     },
     "CAL_C": {
       "name": "China Airlines Cargo",
       "icao": "CAL",
-      "terminal": "T100"
+      "terminal": "T102"
+    },
+    "KAL_C": {
+      "name": "Korean Air Cargo",
+      "icao": "KAL",
+      "terminal": "T104"
+    },
+    "UPS": {
+      "name": "UPS Airlines",
+      "icao": "UPS",
+      "terminal": "T105"
+    },
+    "BOX": {
+      "name": "AeroLogic",
+      "icao": "BOX",
+      "terminal": "T104"
+    },
+    "GEC": {
+      "name": "Lufthansa Cargo",
+      "icao": "GEC",
+      "terminal": "T104"
+    },
+    "CCA_C": {
+      "name": "Air China Cargo",
+      "icao": "CCA",
+      "terminal": "T104"
+    },
+    "RPA_A": {
+      "name": "Republic Airways (American Eagle)",
+      "icao": "RPA",
+      "terminal": "T8"
+    },
+    "RPA_D": {
+      "name": "Republic Airways (Delta Connection)",
+      "icao": "RPA",
+      "terminal": "T4"
+    },
+    "ANA": {
+      "name": "All Nippon Airways",
+      "icao": "ANA",
+      "terminal": "T7"
+    },
+    "EWG": {
+      "name": "Eurowings",
+      "icao": "EWG",
+      "terminal": "T7"
+    },
+    "AFL": {
+      "name": "Aeroflot",
+      "icao": "AFL",
+      "terminal": "T1"
+    },
+    "JAL": {
+      "name": "Japan Airlines",
+      "icao": "JAL",
+      "terminal": "T8"
     }
   },
   "quickAirlines": [
