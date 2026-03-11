@@ -1,0 +1,26 @@
+{
+  "airports": {
+    "KJFK": {
+      "icao": "KJFK",
+      "iata": "JFK",
+      "name": "John F. Kennedy International Airport",
+      "city": "New York, NY",
+      "status": "active",
+      "file": "data/kjfk.json"
+    },
+    "KLGA": {
+      "icao": "KLGA",
+      "iata": "LGA",
+      "name": "LaGuardia Airport",
+      "city": "New York, NY",
+      "status": "coming_soon"
+    },
+    "KPHL": {
+      "icao": "KPHL",
+      "iata": "PHL",
+      "name": "Philadelphia International Airport",
+      "city": "Philadelphia, PA",
+      "status": "coming_soon"
+    }
+  }
+}

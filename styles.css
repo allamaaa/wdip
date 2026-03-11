@@ -739,6 +739,36 @@ body {
   font-family: var(--font-mono);
 }
 
+.autocomplete-callsign {
+  font-size: 10px;
+  color: var(--accent-dim);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.autocomplete-cargo {
+  font-size: 9px;
+  background: rgba(0, 232, 123, 0.15);
+  color: var(--green);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.cargo-badge-sm {
+  display: inline-block;
+  font-size: 8px;
+  background: rgba(0, 232, 123, 0.2);
+  color: var(--green);
+  padding: 0 3px;
+  border-radius: 3px;
+  margin-left: 2px;
+  font-weight: 700;
+  vertical-align: super;
+}
+
 /* Quick Airlines */
 .quick-airlines {
   display: flex;
@@ -1993,7 +2023,7 @@ body {
 }
 
 /* Leaflet editable vertex markers dark theme */
-.leaflet-div-icon {
+.leaflet-div-icon:not(.drag-handle-icon) {
   background: var(--accent) !important;
   border: 2px solid #fff !important;
   border-radius: 50% !important;
@@ -2001,6 +2031,264 @@ body {
   height: 10px !important;
   margin-left: -5px !important;
   margin-top: -5px !important;
+}
+
+/* Drag handle for rectangles */
+.drag-handle-icon {
+  background: rgba(0, 0, 0, 0.65) !important;
+  border: 2px solid rgba(255, 255, 255, 0.8) !important;
+  border-radius: 6px !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: grab !important;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.drag-handle-icon:hover {
+  background: rgba(0, 212, 255, 0.5) !important;
+  border-color: var(--accent) !important;
+}
+
+.drag-handle-icon:active {
+  cursor: grabbing !important;
+}
+
+/* Editor airline search dropdown */
+.editor-airline-search-wrap {
+  position: relative;
+}
+
+.editor-airline-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 200;
+  display: none;
+  box-shadow: var(--shadow-md);
+}
+
+.editor-airline-dropdown.active {
+  display: block;
+}
+
+.editor-airline-dd-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+
+.editor-airline-dd-item:last-child {
+  border-bottom: none;
+}
+
+.editor-airline-dd-item:hover {
+  background: var(--bg-card-hover);
+}
+
+.dd-icao {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 36px;
+}
+
+.dd-name {
+  flex: 1;
+  color: var(--text-primary);
+}
+
+.dd-callsign {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.dd-cargo {
+  font-size: 9px;
+  background: rgba(0, 232, 123, 0.15);
+  color: var(--green);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.editor-airline-dd-empty {
+  padding: 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.cargo-badge-tiny {
+  font-size: 8px;
+  background: rgba(0, 232, 123, 0.2);
+  color: var(--green);
+  padding: 0 3px;
+  border-radius: 2px;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+/* Settings panel */
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-overlay.active {
+  display: flex;
+}
+
+.settings-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 480px;
+  box-shadow: var(--shadow-lg);
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.settings-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.settings-close-btn:hover {
+  color: var(--text-primary);
+}
+
+.settings-body {
+  padding: 24px;
+}
+
+.settings-field {
+  margin-bottom: 20px;
+}
+
+.settings-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.settings-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.settings-hint a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.settings-hint a:hover {
+  text-decoration: underline;
+}
+
+.settings-hint code {
+  font-family: var(--font-mono);
+  background: rgba(0, 212, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.settings-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.settings-input:focus {
+  border-color: var(--accent);
+}
+
+.settings-save-btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--bg-primary);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.settings-save-btn:hover {
+  background: var(--accent-dim);
+}
+
+/* Editor settings button */
+.editor-settings-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  transition: all var(--transition);
+}
+
+.editor-settings-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* Editor responsive */

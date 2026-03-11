@@ -35,6 +35,9 @@
           Export JSON
         </button>
         <button class="editor-reset-btn" id="resetBtn">Reset</button>
+        <button class="editor-settings-btn" id="settingsBtn" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.5"/><path d="M16.47 11.13a1.25 1.25 0 00.25 1.38l.05.04a1.5 1.5 0 11-2.13 2.13l-.04-.05a1.25 1.25 0 00-2.13.88v.12a1.5 1.5 0 01-3 0v-.06a1.25 1.25 0 00-.82-1.15 1.25 1.25 0 00-1.38.25l-.04.05a1.5 1.5 0 11-2.13-2.13l.05-.04a1.25 1.25 0 00-.88-2.13H4.5a1.5 1.5 0 010-3h.06a1.25 1.25 0 001.15-.82 1.25 1.25 0 00-.25-1.38l-.05-.04A1.5 1.5 0 117.54 3.1l.04.05a1.25 1.25 0 001.38.25H9a1.25 1.25 0 00.75-1.15V2a1.5 1.5 0 013 0v.06a1.25 1.25 0 00.75 1.15 1.25 1.25 0 001.38-.25l.04-.05a1.5 1.5 0 112.13 2.13l-.05.04a1.25 1.25 0 00-.25 1.38V6.5a1.25 1.25 0 001.15.75h.35a1.5 1.5 0 010 3h-.06a1.25 1.25 0 00-1.15.75z" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
       </div>
     </div>
   </nav>
@@ -54,7 +57,6 @@
             <h3>Airport Map</h3>
             <div class="map-view-toggle" id="mapViewToggle">
               <button class="map-toggle-btn active" data-view="satellite">Satellite</button>
-              <button class="map-toggle-btn" data-view="chart">FAA Chart</button>
             </div>
             <span class="map-hint" id="mapHint">Drag rectangles to reposition</span>
           </div>
@@ -63,7 +65,7 @@
           </div>
         </div>
         <div class="editor-map-instructions">
-          <p><strong>Tip:</strong> Click a terminal/FBO rectangle to select it. Drag corners to resize, drag the body to move. Changes update in real-time.</p>
+          <p><strong>Tip:</strong> Click a terminal/FBO rectangle to select it. Drag corners to resize. Use the ✥ handle in the center to reposition.</p>
         </div>
       </div>
 
@@ -103,8 +105,27 @@
   <!-- Toast notification -->
   <div class="editor-toast" id="toast"></div>
 
+  <!-- Settings Overlay -->
+  <div class="settings-overlay" id="settingsOverlay">
+    <div class="settings-panel">
+      <div class="settings-header">
+        <h3>Settings</h3>
+        <button class="settings-close-btn" id="settingsClose">&times;</button>
+      </div>
+      <div class="settings-body">
+        <div class="settings-field">
+          <label>GitHub Personal Access Token</label>
+          <p class="settings-hint">Required to save changes globally. Create a token with <code>repo</code> scope at <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">github.com/settings/tokens</a>.</p>
+          <input type="password" class="settings-input" id="ghTokenInput" placeholder="ghp_xxxxxxxxxxxx" spellcheck="false">
+        </div>
+        <button class="settings-save-btn" id="settingsSave">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet-editable@1.2.0/src/Leaflet.Editable.js"></script>
+  <script src="airlines-db.js"></script>
   <script src="edit.js"></script>
 </body>
 </html>

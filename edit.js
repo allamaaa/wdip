@@ -3,107 +3,29 @@
    ============================================ */
 
 // ==========================================
-// DEFAULT DATA (mirror of app.js AIRPORTS)
-// ==========================================
-
-const DEFAULT_AIRPORTS = {
-  KJFK: {
-    icao: "KJFK",
-    iata: "JFK",
-    name: "John F. Kennedy International Airport",
-    city: "New York, NY",
-    elevation: "13 ft",
-    status: "active",
-    runways: ["4L/22R", "4R/22L", "13L/31R", "13R/31L"],
-    map: {
-      center: [40.6413, -73.7781],
-      zoom: 15,
-      chartImage: "images/kjfk-chart.png",
-      chartBounds: [[40.6175, -73.8050], [40.6680, -73.7500]],
-    },
-    terminals: [
-      { id: "T1", name: "Terminal 1", gates: "1 – 11", bounds: [[40.6432, -73.7878], [40.6452, -73.7833]] },
-      { id: "T4", name: "Terminal 4", gates: "A1 – A7, B20 – B47", bounds: [[40.6425, -73.7790], [40.6455, -73.7720]] },
-      { id: "T5", name: "Terminal 5", gates: "1 – 32", bounds: [[40.6400, -73.7755], [40.6425, -73.7718]] },
-      { id: "T7", name: "Terminal 7", gates: "Under Renovation", renovation: true, bounds: [[40.6383, -73.7820], [40.6400, -73.7775]] },
-      { id: "T8", name: "Terminal 8", gates: "1 – 50", bounds: [[40.6390, -73.7880], [40.6430, -73.7838]] },
-    ],
-    airlines: {
-      AFR: { name: "Air France", icao: "AFR", terminal: "T1" },
-      AUA: { name: "Austrian Airlines", icao: "AUA", terminal: "T1" },
-      ITY: { name: "ITA Airways", icao: "ITY", terminal: "T1" },
-      KAL: { name: "Korean Air", icao: "KAL", terminal: "T1" },
-      DLH: { name: "Lufthansa", icao: "DLH", terminal: "T1" },
-      THY: { name: "Turkish Airlines", icao: "THY", terminal: "T1" },
-      AZA: { name: "Alitalia", icao: "AZA", terminal: "T1" },
-      NAX: { name: "Norwegian", icao: "NAX", terminal: "T1" },
-      TAP: { name: "TAP Air Portugal", icao: "TAP", terminal: "T1" },
-      PHO: { name: "Philippines AirAsia", icao: "PHO", terminal: "T1" },
-      DAL: { name: "Delta Air Lines", icao: "DAL", terminal: "T4" },
-      AMX: { name: "Aeromexico", icao: "AMX", terminal: "T4" },
-      AIC: { name: "Air India", icao: "AIC", terminal: "T4" },
-      AVA: { name: "Avianca", icao: "AVA", terminal: "T4" },
-      CAL: { name: "China Airlines", icao: "CAL", terminal: "T4" },
-      CES: { name: "China Eastern", icao: "CES", terminal: "T4" },
-      CSN: { name: "China Southern", icao: "CSN", terminal: "T4" },
-      UAE: { name: "Emirates", icao: "UAE", terminal: "T4" },
-      ETD: { name: "Etihad Airways", icao: "ETD", terminal: "T4" },
-      ELY: { name: "El Al", icao: "ELY", terminal: "T4" },
-      KLM: { name: "KLM", icao: "KLM", terminal: "T4" },
-      KQA: { name: "Kenya Airways", icao: "KQA", terminal: "T4" },
-      SIA: { name: "Singapore Airlines", icao: "SIA", terminal: "T4" },
-      VIR: { name: "Virgin Atlantic", icao: "VIR", terminal: "T4" },
-      CXA: { name: "XiamenAir", icao: "CXA", terminal: "T4" },
-      SVA: { name: "Saudia", icao: "SVA", terminal: "T4" },
-      ARG: { name: "Aerolineas Argentinas", icao: "ARG", terminal: "T4" },
-      JBU: { name: "JetBlue Airways", icao: "JBU", terminal: "T5" },
-      HAL: { name: "Hawaiian Airlines", icao: "HAL", terminal: "T5" },
-      KAP: { name: "Cape Air", icao: "KAP", terminal: "T5" },
-      AAL: { name: "American Airlines", icao: "AAL", terminal: "T8" },
-      BAW: { name: "British Airways", icao: "BAW", terminal: "T8" },
-      CPA: { name: "Cathay Pacific", icao: "CPA", terminal: "T8" },
-      FIN: { name: "Finnair", icao: "FIN", terminal: "T8" },
-      IBE: { name: "Iberia", icao: "IBE", terminal: "T8" },
-      JAL: { name: "Japan Airlines", icao: "JAL", terminal: "T8" },
-      QFA: { name: "Qantas", icao: "QFA", terminal: "T8" },
-      QTR: { name: "Qatar Airways", icao: "QTR", terminal: "T8" },
-      RAM: { name: "Royal Air Maroc", icao: "RAM", terminal: "T8" },
-      RJA: { name: "Royal Jordanian", icao: "RJA", terminal: "T8" },
-      ICE: { name: "Icelandair", icao: "ICE", terminal: "T8" },
-      LOT: { name: "LOT Polish Airlines", icao: "LOT", terminal: "T8" },
-      TAM: { name: "LATAM Airlines", icao: "TAM", terminal: "T8" },
-    },
-    quickAirlines: ["DAL", "AAL", "JBU", "UAE", "BAW", "DLH", "AFR", "SIA"],
-    fbos: [
-      { id: "FBO1", name: "Modern Aviation", location: "Building 141, North Boundary Road", phone: "(718) 751-1200", bounds: [[40.6500, -73.7880], [40.6520, -73.7840]] },
-      { id: "FBO2", name: "Sheltair", location: "Hangar 19, JFK Airport", phone: "(718) 244-6600", bounds: [[40.6490, -73.7760], [40.6510, -73.7720]] },
-    ],
-  },
-};
-
-// ==========================================
 // STATE
 // ==========================================
 
-let airportData = null; // The airport object being edited
+let airportData = null;
 let icao = null;
 let editMap = null;
 let satelliteTileLayer = null;
-let chartOverlay = null;
-let currentMapView = "satellite";
-let termRects = {}; // terminal id -> L.rectangle
-let fboRects = {};  // fbo id -> L.rectangle
+let termRects = {};
+let fboRects = {};
+let dragHandles = {};
 let selectedRectId = null;
 let hasUnsavedChanges = false;
 let nextTermId = 100;
 let nextFboId = 100;
 
+// GitHub config
+const GITHUB_REPO = "allamaaa/wdip";
+
 // ==========================================
 // INIT
 // ==========================================
 
-function init() {
-  // Get ICAO from URL params
+async function init() {
   const params = new URLSearchParams(window.location.search);
   icao = params.get("icao");
 
@@ -113,8 +35,8 @@ function init() {
     return;
   }
 
-  // Load data: localStorage first, then defaults
-  airportData = loadAirportData(icao);
+  // Load airport data from GitHub (or fallback to local JSON)
+  airportData = await loadAirportData(icao);
 
   if (!airportData) {
     document.getElementById("editorHeader").innerHTML =
@@ -122,43 +44,25 @@ function init() {
     return;
   }
 
-  // Set back link
   document.getElementById("backLink").href = `index.html#airports`;
 
-  // Render header
   renderHeader();
-
-  // Init map
   initMap();
-
-  // Render panels
   renderTerminalCards();
   renderFBOCards();
-
-  // Bind events
   bindEvents();
 }
 
-function loadAirportData(icao) {
-  // Try localStorage first
+async function loadAirportData(code) {
+  // Try loading from GitHub first
   try {
-    const saved = localStorage.getItem("wdip_airports");
-    if (saved) {
-      const data = JSON.parse(saved);
-      if (data[icao]) {
-        // Deep clone so we don't mutate localStorage directly
-        return JSON.parse(JSON.stringify(data[icao]));
-      }
+    const resp = await fetch(`data/${code.toLowerCase()}.json`);
+    if (resp.ok) {
+      return await resp.json();
     }
   } catch (e) {
-    console.warn("Failed to load from localStorage", e);
+    console.warn("Failed to load airport JSON", e);
   }
-
-  // Fallback to defaults
-  if (DEFAULT_AIRPORTS[icao]) {
-    return JSON.parse(JSON.stringify(DEFAULT_AIRPORTS[icao]));
-  }
-
   return null;
 }
 
@@ -194,34 +98,71 @@ function initMap() {
   );
   satelliteTileLayer.addTo(editMap);
 
-  if (mapConfig.chartImage && mapConfig.chartBounds) {
-    chartOverlay = L.imageOverlay(
-      mapConfig.chartImage,
-      mapConfig.chartBounds,
-      { opacity: 0.92, interactive: false }
-    );
-  }
-
-  // Draw terminal rectangles
   drawTerminalRects();
-
-  // Draw FBO rectangles
   drawFBORects();
+}
 
-  // Map view toggle
-  document.getElementById("mapViewToggle").addEventListener("click", (e) => {
-    const btn = e.target.closest(".map-toggle-btn");
-    if (!btn) return;
-    const view = btn.dataset.view;
-    if (view === currentMapView) return;
-    switchMapView(view);
-    document.querySelectorAll(".map-toggle-btn").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
+function createDragHandle(rect, type, id) {
+  const center = rect.getCenter();
+  const icon = L.divIcon({
+    className: "drag-handle-icon",
+    html: '<svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M12 2l3 3h-2v4h4v-2l3 3-3 3v-2h-4v4h2l-3 3-3-3h2v-4H7v2l-3-3 3-3v2h4V5H9l3-3z"/></svg>',
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
   });
+
+  const marker = L.marker(center, {
+    icon,
+    draggable: true,
+    zIndexOffset: 1000,
+  });
+  marker.addTo(editMap);
+
+  let startLatLng = null;
+
+  marker.on("dragstart", () => {
+    editMap.dragging.disable();
+    startLatLng = marker.getLatLng();
+  });
+
+  marker.on("drag", (e) => {
+    const newLatLng = e.target.getLatLng();
+    const dlat = newLatLng.lat - startLatLng.lat;
+    const dlng = newLatLng.lng - startLatLng.lng;
+
+    const bounds = rect.getBounds();
+    const newBounds = L.latLngBounds(
+      [bounds.getSouth() + dlat, bounds.getWest() + dlng],
+      [bounds.getNorth() + dlat, bounds.getEast() + dlng]
+    );
+
+    rect.setBounds(newBounds);
+
+    // Disable edit temporarily to avoid glitches, re-enable after
+    rect.disableEdit();
+
+    startLatLng = newLatLng;
+  });
+
+  marker.on("dragend", () => {
+    editMap.dragging.enable();
+    rect.enableEdit();
+    // Update data bounds
+    if (type === "term") {
+      updateTermBounds(id, rect);
+    } else {
+      updateFBOBounds(id, rect);
+    }
+    // Sync handle position
+    marker.setLatLng(rect.getCenter());
+  });
+
+  return marker;
 }
 
 function drawTerminalRects() {
   termRects = {};
+  dragHandles = {};
   airportData.terminals.forEach((term) => {
     const isReno = !!term.renovation;
     const color = isReno ? "#fbbf24" : "#00d4ff";
@@ -236,25 +177,30 @@ function drawTerminalRects() {
 
     const rect = L.rectangle(term.bounds, style);
     rect.addTo(editMap);
-
-    // Make editable
     rect.enableEdit();
 
-    // Tooltip
     rect.bindTooltip(`<strong>${term.name}</strong>`, {
       className: "terminal-tooltip",
       direction: "top",
       offset: [0, -5],
     });
 
-    // Listen for drag/resize
-    rect.on("editable:dragend", () => updateTermBounds(term.id, rect));
-    rect.on("editable:vertex:dragend", () => updateTermBounds(term.id, rect));
+    // Listen for vertex drag (resize)
+    rect.on("editable:vertex:dragend", () => {
+      updateTermBounds(term.id, rect);
+      // Sync handle position after resize
+      if (dragHandles[`term_${term.id}`]) {
+        dragHandles[`term_${term.id}`].setLatLng(rect.getCenter());
+      }
+    });
 
-    // Click to select
     rect.on("click", () => selectRect("term", term.id));
 
     termRects[term.id] = rect;
+
+    // Create drag handle
+    const handle = createDragHandle(rect, "term", term.id);
+    dragHandles[`term_${term.id}`] = handle;
   });
 }
 
@@ -281,11 +227,19 @@ function drawFBORects() {
       offset: [0, -5],
     });
 
-    rect.on("editable:dragend", () => updateFBOBounds(fbo.id, rect));
-    rect.on("editable:vertex:dragend", () => updateFBOBounds(fbo.id, rect));
+    rect.on("editable:vertex:dragend", () => {
+      updateFBOBounds(fbo.id, rect);
+      if (dragHandles[`fbo_${fbo.id}`]) {
+        dragHandles[`fbo_${fbo.id}`].setLatLng(rect.getCenter());
+      }
+    });
+
     rect.on("click", () => selectRect("fbo", fbo.id));
 
     fboRects[fbo.id] = rect;
+
+    const handle = createDragHandle(rect, "fbo", fbo.id);
+    dragHandles[`fbo_${fbo.id}`] = handle;
   });
 }
 
@@ -319,14 +273,12 @@ function selectRect(type, id) {
     rect.setStyle({ color: "#00e87b", fillColor: "#00e87b", weight: 2, opacity: 0.5, fillOpacity: 0.08 });
   });
 
-  // Highlight selected
   if (type === "term" && termRects[id]) {
     const term = airportData.terminals.find((t) => t.id === id);
     const isReno = term && term.renovation;
     const color = isReno ? "#fbbf24" : "#00d4ff";
     termRects[id].setStyle({ color, fillColor: color, weight: 3, opacity: 1, fillOpacity: 0.25 });
     editMap.panTo(termRects[id].getCenter(), { animate: true });
-    // Scroll to terminal card
     const card = document.querySelector(`.editor-term-card[data-term-id="${id}"]`);
     if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest" });
   } else if (type === "fbo" && fboRects[id]) {
@@ -337,19 +289,6 @@ function selectRect(type, id) {
   }
 
   selectedRectId = { type, id };
-}
-
-function switchMapView(view) {
-  if (!editMap) return;
-  currentMapView = view;
-
-  if (view === "satellite") {
-    if (chartOverlay && editMap.hasLayer(chartOverlay)) editMap.removeLayer(chartOverlay);
-    if (!editMap.hasLayer(satelliteTileLayer)) satelliteTileLayer.addTo(editMap);
-  } else if (view === "chart") {
-    if (editMap.hasLayer(satelliteTileLayer)) editMap.removeLayer(satelliteTileLayer);
-    if (chartOverlay && !editMap.hasLayer(chartOverlay)) chartOverlay.addTo(editMap);
-  }
 }
 
 // ==========================================
@@ -391,21 +330,23 @@ function renderTerminalCards() {
             <label>Airlines (${airlines.length})</label>
             <div class="editor-airline-tags">
               ${airlines.map((a) => `
-                <span class="editor-airline-tag" data-icao="${a.icao}" data-term-id="${term.id}">
-                  ${a.icao}
-                  <button class="editor-airline-remove" data-icao="${a.icao}" data-term-id="${term.id}">&times;</button>
+                <span class="editor-airline-tag" data-key="${a.key}" data-term-id="${term.id}">
+                  ${a.icao}${AIRLINES_DB[a.key] && AIRLINES_DB[a.key].cargo ? ' <span class="cargo-badge-tiny">C</span>' : ""}
+                  <button class="editor-airline-remove" data-key="${a.key}" data-term-id="${term.id}">&times;</button>
                 </span>
               `).join("")}
             </div>
             <div class="editor-add-airline">
-              <input class="editor-airline-input" placeholder="Add ICAO..." maxlength="4" data-term-id="${term.id}" spellcheck="false">
+              <div class="editor-airline-search-wrap">
+                <input class="editor-airline-input" placeholder="Search airlines..." data-term-id="${term.id}" spellcheck="false">
+                <div class="editor-airline-dropdown" data-term-id="${term.id}"></div>
+              </div>
             </div>
           </div>
         </div>`;
     })
     .join("");
 
-  // Bind terminal card events
   bindTerminalCardEvents();
 }
 
@@ -419,7 +360,6 @@ function bindTerminalCardEvents() {
       if (term) {
         term[field] = input.value;
         markChanged();
-        // Update tooltip
         if (field === "name" && termRects[termId]) {
           termRects[termId].unbindTooltip();
           termRects[termId].bindTooltip(`<strong>${term.name}</strong>`, {
@@ -440,9 +380,7 @@ function bindTerminalCardEvents() {
       if (term) {
         term.renovation = cb.checked;
         markChanged();
-        // Re-render to update styles
         renderTerminalCards();
-        // Update rect style
         if (termRects[termId]) {
           const color = cb.checked ? "#fbbf24" : "#00d4ff";
           termRects[termId].setStyle({
@@ -462,34 +400,76 @@ function bindTerminalCardEvents() {
   document.querySelectorAll(".editor-airline-remove").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
-      const icaoCode = btn.dataset.icao;
-      const termId = btn.dataset.termId;
-      if (airportData.airlines[icaoCode]) {
-        delete airportData.airlines[icaoCode];
+      const key = btn.dataset.key;
+      if (airportData.airlines[key]) {
+        delete airportData.airlines[key];
         markChanged();
         renderTerminalCards();
       }
     });
   });
 
-  // Add airline input
+  // Airline search inputs
   document.querySelectorAll(".editor-airline-input").forEach((input) => {
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const code = input.value.trim().toUpperCase();
-        const termId = input.dataset.termId;
-        if (!code) return;
+    const termId = input.dataset.termId;
+    const dropdown = document.querySelector(`.editor-airline-dropdown[data-term-id="${termId}"]`);
 
-        // Check if airline already exists
-        if (airportData.airlines[code]) {
-          // Move it to this terminal
-          airportData.airlines[code].terminal = termId;
-        } else {
-          // Add new airline
-          airportData.airlines[code] = { name: code, icao: code, terminal: termId };
-        }
-        markChanged();
-        renderTerminalCards();
+    input.addEventListener("input", () => {
+      const val = input.value.trim();
+      if (!val) {
+        dropdown.innerHTML = "";
+        dropdown.classList.remove("active");
+        return;
+      }
+
+      // Search full airline DB
+      const results = searchAirlines(val).slice(0, 8);
+      if (results.length === 0) {
+        dropdown.innerHTML = '<div class="editor-airline-dd-empty">No airlines found</div>';
+        dropdown.classList.add("active");
+        return;
+      }
+
+      dropdown.innerHTML = results.map((a) => `
+        <div class="editor-airline-dd-item" data-key="${a.key}">
+          <span class="dd-icao">${a.icao}</span>
+          <span class="dd-name">${a.name}</span>
+          ${a.callsign ? `<span class="dd-callsign">${a.callsign}</span>` : ""}
+          ${a.cargo ? '<span class="dd-cargo">CARGO</span>' : ""}
+        </div>
+      `).join("");
+      dropdown.classList.add("active");
+
+      dropdown.querySelectorAll(".editor-airline-dd-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          const key = item.dataset.key;
+          const dbEntry = AIRLINES_DB[key];
+          if (!dbEntry) return;
+
+          // Add to airport airlines
+          airportData.airlines[key] = {
+            name: dbEntry.name,
+            icao: dbEntry.icao,
+            terminal: termId,
+          };
+          markChanged();
+          renderTerminalCards();
+        });
+      });
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        dropdown.innerHTML = "";
+        dropdown.classList.remove("active");
+      }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".editor-airline-search-wrap")) {
+        dropdown.innerHTML = "";
+        dropdown.classList.remove("active");
       }
     });
   });
@@ -500,20 +480,21 @@ function bindTerminalCardEvents() {
       const termId = btn.dataset.termId;
       if (!confirm(`Delete this terminal? Airlines assigned to it will be unassigned.`)) return;
 
-      // Remove airlines assigned to this terminal
       Object.keys(airportData.airlines).forEach((code) => {
         if (airportData.airlines[code].terminal === termId) {
           delete airportData.airlines[code];
         }
       });
 
-      // Remove terminal
       airportData.terminals = airportData.terminals.filter((t) => t.id !== termId);
 
-      // Remove rectangle from map
       if (termRects[termId]) {
         editMap.removeLayer(termRects[termId]);
         delete termRects[termId];
+      }
+      if (dragHandles[`term_${termId}`]) {
+        editMap.removeLayer(dragHandles[`term_${termId}`]);
+        delete dragHandles[`term_${termId}`];
       }
 
       markChanged();
@@ -524,8 +505,7 @@ function bindTerminalCardEvents() {
   // Click card to highlight on map
   document.querySelectorAll(".editor-term-card").forEach((card) => {
     card.addEventListener("click", (e) => {
-      // Don't trigger on input/button clicks
-      if (e.target.closest("input, button")) return;
+      if (e.target.closest("input, button, .editor-airline-dropdown")) return;
       selectRect("term", card.dataset.termId);
     });
   });
@@ -562,12 +542,10 @@ function renderFBOCards() {
     `)
     .join("");
 
-  // Bind FBO card events
   bindFBOCardEvents();
 }
 
 function bindFBOCardEvents() {
-  // Field changes
   document.querySelectorAll(".editor-fbo-card input.editor-card-input, .fbo-name-input").forEach((input) => {
     input.addEventListener("change", () => {
       const fboId = input.dataset.fboId;
@@ -576,7 +554,6 @@ function bindFBOCardEvents() {
       if (fbo) {
         fbo[field] = input.value;
         markChanged();
-        // Update tooltip if name changed
         if (field === "name" && fboRects[fboId]) {
           fboRects[fboId].unbindTooltip();
           fboRects[fboId].bindTooltip(`<strong>${fbo.name}</strong><span class="tooltip-gates">FBO</span>`, {
@@ -589,7 +566,6 @@ function bindFBOCardEvents() {
     });
   });
 
-  // Delete FBO
   document.querySelectorAll(".fbo-delete").forEach((btn) => {
     btn.addEventListener("click", () => {
       const fboId = btn.dataset.fboId;
@@ -601,13 +577,16 @@ function bindFBOCardEvents() {
         editMap.removeLayer(fboRects[fboId]);
         delete fboRects[fboId];
       }
+      if (dragHandles[`fbo_${fboId}`]) {
+        editMap.removeLayer(dragHandles[`fbo_${fboId}`]);
+        delete dragHandles[`fbo_${fboId}`];
+      }
 
       markChanged();
       renderFBOCards();
     });
   });
 
-  // Click card to highlight on map
   document.querySelectorAll(".editor-fbo-card").forEach((card) => {
     card.addEventListener("click", (e) => {
       if (e.target.closest("input, button")) return;
@@ -638,7 +617,6 @@ function addTerminal() {
 
   airportData.terminals.push(newTerm);
 
-  // Draw rectangle
   const rect = L.rectangle(bounds, {
     color: "#00d4ff",
     weight: 2,
@@ -655,11 +633,18 @@ function addTerminal() {
     offset: [0, -5],
   });
 
-  rect.on("editable:dragend", () => updateTermBounds(id, rect));
-  rect.on("editable:vertex:dragend", () => updateTermBounds(id, rect));
+  rect.on("editable:vertex:dragend", () => {
+    updateTermBounds(id, rect);
+    if (dragHandles[`term_${id}`]) {
+      dragHandles[`term_${id}`].setLatLng(rect.getCenter());
+    }
+  });
   rect.on("click", () => selectRect("term", id));
 
   termRects[id] = rect;
+
+  const handle = createDragHandle(rect, "term", id);
+  dragHandles[`term_${id}`] = handle;
 
   markChanged();
   renderTerminalCards();
@@ -686,7 +671,6 @@ function addFBO() {
   if (!airportData.fbos) airportData.fbos = [];
   airportData.fbos.push(newFbo);
 
-  // Draw rectangle
   const rect = L.rectangle(bounds, {
     color: "#00e87b",
     weight: 2,
@@ -703,11 +687,18 @@ function addFBO() {
     offset: [0, -5],
   });
 
-  rect.on("editable:dragend", () => updateFBOBounds(id, rect));
-  rect.on("editable:vertex:dragend", () => updateFBOBounds(id, rect));
+  rect.on("editable:vertex:dragend", () => {
+    updateFBOBounds(id, rect);
+    if (dragHandles[`fbo_${id}`]) {
+      dragHandles[`fbo_${id}`].setLatLng(rect.getCenter());
+    }
+  });
   rect.on("click", () => selectRect("fbo", id));
 
   fboRects[id] = rect;
+
+  const handle = createDragHandle(rect, "fbo", id);
+  dragHandles[`fbo_${id}`] = handle;
 
   markChanged();
   renderFBOCards();
@@ -715,24 +706,70 @@ function addFBO() {
 }
 
 // ==========================================
-// SAVE / EXPORT / RESET
+// SAVE (GitHub Contents API)
 // ==========================================
 
-function saveData() {
+async function saveData() {
+  const token = localStorage.getItem("wdip_gh_token");
+  if (!token) {
+    showSettingsPanel();
+    showToast("Please set your GitHub token first", true);
+    return;
+  }
+
+  const saveBtn = document.getElementById("saveBtn");
+  saveBtn.textContent = "Saving...";
+  saveBtn.disabled = true;
+
   try {
-    let allData = {};
-    const existing = localStorage.getItem("wdip_airports");
-    if (existing) {
-      allData = JSON.parse(existing);
+    const filePath = `where-do-i-park/data/${icao.toLowerCase()}.json`;
+    const content = JSON.stringify(airportData, null, 2);
+    const encoded = btoa(unescape(encodeURIComponent(content)));
+
+    // Get current file SHA
+    let sha = null;
+    try {
+      const getResp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`, {
+        headers: { Authorization: `token ${token}` },
+      });
+      if (getResp.ok) {
+        const fileData = await getResp.json();
+        sha = fileData.sha;
+      }
+    } catch (e) {
+      // File might not exist yet, that's okay
     }
-    allData[icao] = airportData;
-    localStorage.setItem("wdip_airports", JSON.stringify(allData));
+
+    // PUT to update/create file
+    const body = {
+      message: `Update ${icao} airport data`,
+      content: encoded,
+    };
+    if (sha) body.sha = sha;
+
+    const putResp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `token ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || "GitHub API error");
+    }
+
     hasUnsavedChanges = false;
     updateSaveButtonState();
-    showToast("Saved successfully!");
+    showToast("Saved to GitHub!");
   } catch (e) {
     console.error("Save failed", e);
-    showToast("Save failed — check console for details", true);
+    showToast(`Save failed: ${e.message}`, true);
+  } finally {
+    saveBtn.textContent = "Save";
+    saveBtn.disabled = false;
   }
 }
 
@@ -751,42 +788,36 @@ function exportJSON() {
 }
 
 function resetToDefaults() {
-  if (!confirm("Reset all changes for this airport to defaults? This cannot be undone.")) return;
+  if (!confirm("Reset all changes for this airport to defaults? This will reload the data from the server.")) return;
+  window.location.reload();
+}
 
-  // Clear from localStorage
-  try {
-    const existing = localStorage.getItem("wdip_airports");
-    if (existing) {
-      const allData = JSON.parse(existing);
-      delete allData[icao];
-      if (Object.keys(allData).length === 0) {
-        localStorage.removeItem("wdip_airports");
-      } else {
-        localStorage.setItem("wdip_airports", JSON.stringify(allData));
-      }
-    }
-  } catch (e) {
-    console.warn("Error clearing localStorage", e);
+// ==========================================
+// SETTINGS PANEL
+// ==========================================
+
+function showSettingsPanel() {
+  const overlay = document.getElementById("settingsOverlay");
+  const tokenInput = document.getElementById("ghTokenInput");
+  const saved = localStorage.getItem("wdip_gh_token") || "";
+  tokenInput.value = saved;
+  overlay.classList.add("active");
+}
+
+function hideSettingsPanel() {
+  document.getElementById("settingsOverlay").classList.remove("active");
+}
+
+function saveSettings() {
+  const token = document.getElementById("ghTokenInput").value.trim();
+  if (token) {
+    localStorage.setItem("wdip_gh_token", token);
+    showToast("GitHub token saved!");
+  } else {
+    localStorage.removeItem("wdip_gh_token");
+    showToast("GitHub token cleared");
   }
-
-  // Reload from defaults
-  if (DEFAULT_AIRPORTS[icao]) {
-    airportData = JSON.parse(JSON.stringify(DEFAULT_AIRPORTS[icao]));
-  }
-
-  // Clear and redraw map
-  Object.values(termRects).forEach((r) => editMap.removeLayer(r));
-  Object.values(fboRects).forEach((r) => editMap.removeLayer(r));
-  termRects = {};
-  fboRects = {};
-  drawTerminalRects();
-  drawFBORects();
-
-  hasUnsavedChanges = false;
-  updateSaveButtonState();
-  renderTerminalCards();
-  renderFBOCards();
-  showToast("Reset to defaults!");
+  hideSettingsPanel();
 }
 
 // ==========================================
@@ -794,7 +825,9 @@ function resetToDefaults() {
 // ==========================================
 
 function getAirlinesForTerminal(termId) {
-  return Object.values(airportData.airlines).filter((a) => a.terminal === termId);
+  return Object.entries(airportData.airlines)
+    .filter(([, a]) => a.terminal === termId)
+    .map(([key, a]) => ({ key, ...a }));
 }
 
 function markChanged() {
@@ -835,8 +868,15 @@ function bindEvents() {
   document.getElementById("resetBtn").addEventListener("click", resetToDefaults);
   document.getElementById("addTerminalBtn").addEventListener("click", addTerminal);
   document.getElementById("addFBOBtn").addEventListener("click", addFBO);
+  document.getElementById("settingsBtn").addEventListener("click", showSettingsPanel);
+  document.getElementById("settingsClose").addEventListener("click", hideSettingsPanel);
+  document.getElementById("settingsSave").addEventListener("click", saveSettings);
 
-  // Warn before leaving with unsaved changes
+  // Close settings on overlay click
+  document.getElementById("settingsOverlay").addEventListener("click", (e) => {
+    if (e.target.id === "settingsOverlay") hideSettingsPanel();
+  });
+
   window.addEventListener("beforeunload", (e) => {
     if (hasUnsavedChanges) {
       e.preventDefault();

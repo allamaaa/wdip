@@ -3,455 +3,10 @@
    ============================================ */
 
 // ==========================================
-// DATA
+// DATA (loaded async)
 // ==========================================
 
-const AIRPORTS = {
-  KJFK: {
-  "icao": "KJFK",
-  "iata": "JFK",
-  "name": "John F. Kennedy International Airport",
-  "city": "New York, NY",
-  "elevation": "13 ft",
-  "status": "active",
-  "runways": [
-    "4L/22R",
-    "4R/22L",
-    "13L/31R",
-    "13R/31L"
-  ],
-  "map": {
-    "center": [
-      40.6413,
-      -73.7781
-    ],
-    "zoom": 15,
-    "chartImage": "images/kjfk-chart.png",
-    "chartBounds": [
-      [
-        40.6175,
-        -73.805
-      ],
-      [
-        40.668,
-        -73.75
-      ]
-    ]
-  },
-  "terminals": [
-    {
-      "id": "T1",
-      "name": "Terminal 1",
-      "gates": "1 – 11",
-      "bounds": [
-        [
-          40.64026994661965,
-          -73.79456520080568
-        ],
-        [
-          40.64450323018245,
-          -73.78855705261232
-        ]
-      ]
-    },
-    {
-      "id": "T4",
-      "name": "Terminal 4",
-      "gates": "A1 – A7, B20 – B47",
-      "bounds": [
-        [
-          40.63486397885227,
-          -73.78426551818849
-        ],
-        [
-          40.644307853773974,
-          -73.77538204193117
-        ]
-      ]
-    },
-    {
-      "id": "T5",
-      "name": "Terminal 5",
-      "gates": "1 – 32",
-      "bounds": [
-        [
-          40.6414422674093,
-          -73.77885818481447
-        ],
-        [
-          40.64945257509468,
-          -73.77096176147462
-        ]
-      ]
-    },
-    {
-      "id": "T7",
-      "name": "Terminal 7",
-      "gates": "Under Renovation",
-      "renovation": false,
-      "bounds": [
-        [
-          40.64831295583422,
-          -73.78512382507326
-        ],
-        [
-          40.651699196062204,
-          -73.78104686737062
-        ]
-      ]
-    },
-    {
-      "id": "T8",
-      "name": "Terminal 8",
-      "gates": "1 – 50",
-      "bounds": [
-        [
-          40.64619646843203,
-          -73.79641056060792
-        ],
-        [
-          40.651373603507274,
-          -73.7860679626465
-        ]
-      ]
-    },
-    {
-      "id": "T100",
-      "name": "Cargo Area D",
-      "gates": "1-5",
-      "bounds": [
-        [
-          40.65703868728088,
-          -73.78829956054689
-        ],
-        [
-          40.661824331483544,
-          -73.78126144409181
-        ]
-      ]
-    },
-    {
-      "id": "T101",
-      "name": "Cargo Area C",
-      "gates": "N/A",
-      "bounds": [
-        [
-          40.65264340548722,
-          -73.79778385162355
-        ],
-        [
-          40.6647215954703,
-          -73.7950372695923
-        ]
-      ]
-    },
-    {
-      "id": "T102",
-      "name": "Cargo Area B",
-      "gates": "N/A",
-      "bounds": [
-        [
-          40.647661736090356,
-          -73.80495071411134
-        ],
-        [
-          40.658015377246386,
-          -73.79877090454103
-        ]
-      ]
-    }
-  ],
-  "airlines": {
-    "AFR": {
-      "name": "Air France",
-      "icao": "AFR",
-      "terminal": "T1"
-    },
-    "AUA": {
-      "name": "Austrian Airlines",
-      "icao": "AUA",
-      "terminal": "T1"
-    },
-    "ITY": {
-      "name": "ITA Airways",
-      "icao": "ITY",
-      "terminal": "T1"
-    },
-    "KAL": {
-      "name": "Korean Air",
-      "icao": "KAL",
-      "terminal": "T1"
-    },
-    "DLH": {
-      "name": "Lufthansa",
-      "icao": "DLH",
-      "terminal": "T1"
-    },
-    "THY": {
-      "name": "Turkish Airlines",
-      "icao": "THY",
-      "terminal": "T1"
-    },
-    "AZA": {
-      "name": "Alitalia",
-      "icao": "AZA",
-      "terminal": "T1"
-    },
-    "NAX": {
-      "name": "Norwegian",
-      "icao": "NAX",
-      "terminal": "T1"
-    },
-    "TAP": {
-      "name": "TAP Air Portugal",
-      "icao": "TAP",
-      "terminal": "T5"
-    },
-    "PHO": {
-      "name": "Philippines AirAsia",
-      "icao": "PHO",
-      "terminal": "T1"
-    },
-    "DAL": {
-      "name": "Delta Air Lines",
-      "icao": "DAL",
-      "terminal": "T4"
-    },
-    "AMX": {
-      "name": "Aeromexico",
-      "icao": "AMX",
-      "terminal": "T4"
-    },
-    "AIC": {
-      "name": "Air India",
-      "icao": "AIC",
-      "terminal": "T4"
-    },
-    "AVA": {
-      "name": "Avianca",
-      "icao": "AVA",
-      "terminal": "T4"
-    },
-    "CAL": {
-      "name": "China Airlines",
-      "icao": "CAL",
-      "terminal": "T4"
-    },
-    "CES": {
-      "name": "China Eastern",
-      "icao": "CES",
-      "terminal": "T4"
-    },
-    "CSN": {
-      "name": "China Southern",
-      "icao": "CSN",
-      "terminal": "T4"
-    },
-    "UAE": {
-      "name": "Emirates",
-      "icao": "UAE",
-      "terminal": "T4"
-    },
-    "ETD": {
-      "name": "Etihad Airways",
-      "icao": "ETD",
-      "terminal": "T4"
-    },
-    "ELY": {
-      "name": "El Al",
-      "icao": "ELY",
-      "terminal": "T4"
-    },
-    "KLM": {
-      "name": "KLM",
-      "icao": "KLM",
-      "terminal": "T4"
-    },
-    "KQA": {
-      "name": "Kenya Airways",
-      "icao": "KQA",
-      "terminal": "T4"
-    },
-    "SIA": {
-      "name": "Singapore Airlines",
-      "icao": "SIA",
-      "terminal": "T4"
-    },
-    "VIR": {
-      "name": "Virgin Atlantic",
-      "icao": "VIR",
-      "terminal": "T4"
-    },
-    "CXA": {
-      "name": "XiamenAir",
-      "icao": "CXA",
-      "terminal": "T4"
-    },
-    "SVA": {
-      "name": "Saudia",
-      "icao": "SVA",
-      "terminal": "T4"
-    },
-    "ARG": {
-      "name": "Aerolineas Argentinas",
-      "icao": "ARG",
-      "terminal": "T4"
-    },
-    "JBU": {
-      "name": "JetBlue Airways",
-      "icao": "JBU",
-      "terminal": "T5"
-    },
-    "HAL": {
-      "name": "Hawaiian Airlines",
-      "icao": "HAL",
-      "terminal": "T5"
-    },
-    "KAP": {
-      "name": "Cape Air",
-      "icao": "KAP",
-      "terminal": "T5"
-    },
-    "AAL": {
-      "name": "American Airlines",
-      "icao": "AAL",
-      "terminal": "T8"
-    },
-    "BAW": {
-      "name": "British Airways",
-      "icao": "BAW",
-      "terminal": "T8"
-    },
-    "FIN": {
-      "name": "Finnair",
-      "icao": "FIN",
-      "terminal": "T8"
-    },
-    "IBE": {
-      "name": "Iberia",
-      "icao": "IBE",
-      "terminal": "T8"
-    },
-    "JAL": {
-      "name": "Japan Airlines",
-      "icao": "JAL",
-      "terminal": "T8"
-    },
-    "QFA": {
-      "name": "Qantas",
-      "icao": "QFA",
-      "terminal": "T8"
-    },
-    "QTR": {
-      "name": "Qatar Airways",
-      "icao": "QTR",
-      "terminal": "T8"
-    },
-    "RAM": {
-      "name": "Royal Air Maroc",
-      "icao": "RAM",
-      "terminal": "T8"
-    },
-    "RJA": {
-      "name": "Royal Jordanian",
-      "icao": "RJA",
-      "terminal": "T8"
-    },
-    "ICE": {
-      "name": "Icelandair",
-      "icao": "ICE",
-      "terminal": "T8"
-    },
-    "LOT": {
-      "name": "LOT Polish Airlines",
-      "icao": "LOT",
-      "terminal": "T8"
-    },
-    "TAM": {
-      "name": "LATAM Airlines",
-      "icao": "TAM",
-      "terminal": "T8"
-    },
-    "FDX": {
-      "name": "FedEx",
-      "icao": "FDX",
-      "terminal": "T100"
-    },
-    "UPS": {
-      "name": "UPS Cargo",
-      "icao": "UPS",
-      "terminal": "T101"
-    },
-    "BOX": {
-      "name": "Aerologic Cargo",
-      "icao": "BOX",
-      "terminal": "T102"
-    },
-    "GEC": {
-      "name": "Lufthansa Cargo",
-      "icao": "GEC",
-      "terminal": "T102"
-    },
-    "LTG": {
-      "name": "LATAM Cargo",
-      "icao": "LTG",
-      "terminal": "T102"
-    },
-    "GTI": {
-      "name": "Atlas Air",
-      "icao": "GTI",
-      "terminal": "T102"
-    },
-    "EIN": {
-      "name": "Aer Lingus",
-      "icao": "EIN",
-      "terminal": "T5"
-    }
-  },
-  "quickAirlines": [
-    "DAL",
-    "AAL",
-    "JBU",
-    "UAE",
-    "BAW",
-    "DLH",
-    "AFR",
-    "SIA"
-  ],
-  "fbos": [
-    {
-      "id": "FBO1",
-      "name": "Modern Aviation",
-      "location": "Building 141, North Boundary Road",
-      "phone": "(718) 751-1200",
-      "bounds": [
-        [
-          40.64937117436434,
-          -73.81276130676271
-        ],
-        [
-          40.65186199174389,
-          -73.8090491294861
-        ]
-      ]
-    }
-  ]
-},
-  KLGA: {
-    icao: "KLGA",
-    iata: "LGA",
-    name: "LaGuardia Airport",
-    city: "New York, NY",
-    status: "coming_soon",
-  },
-  KPHL: {
-    icao: "KPHL",
-    iata: "PHL",
-    name: "Philadelphia International Airport",
-    city: "Philadelphia, PA",
-    status: "coming_soon",
-  },
-};
+let AIRPORTS = {};
 
 // ==========================================
 // DOM REFS
@@ -495,10 +50,8 @@ let autocompleteIndex = -1;
 // Leaflet state
 let leafletMap = null;
 let satelliteTileLayer = null;
-let chartOverlay = null;
-let terminalRectangles = {}; // keyed by terminal id
-let fboRectangles = {}; // keyed by fbo id
-let currentMapView = "satellite"; // "satellite" or "chart"
+let terminalRectangles = {};
+let fboRectangles = {};
 
 // Rectangle styles
 const RECT_STYLE_DEFAULT = {
@@ -571,34 +124,18 @@ const RECT_STYLE_FBO_HIGHLIGHTED = {
 // INITIALIZATION
 // ==========================================
 
-function init() {
-  loadFromLocalStorage();
+async function init() {
+  try {
+    const resp = await fetch("data/airports-index.json");
+    const index = await resp.json();
+    AIRPORTS = index.airports;
+  } catch (e) {
+    console.error("WDIP: Failed to load airports index", e);
+    return;
+  }
+
   renderAirportCards();
   bindEvents();
-}
-
-function loadFromLocalStorage() {
-  try {
-    const saved = localStorage.getItem("wdip_airports");
-    if (!saved) return;
-    const data = JSON.parse(saved);
-    // Deep-merge saved data into AIRPORTS (only update existing keys + add new ones)
-    Object.keys(data).forEach((icao) => {
-      if (AIRPORTS[icao]) {
-        // Merge into existing airport
-        const savedApt = data[icao];
-        if (savedApt.terminals) AIRPORTS[icao].terminals = savedApt.terminals;
-        if (savedApt.airlines) AIRPORTS[icao].airlines = savedApt.airlines;
-        if (savedApt.fbos) AIRPORTS[icao].fbos = savedApt.fbos;
-        if (savedApt.quickAirlines) AIRPORTS[icao].quickAirlines = savedApt.quickAirlines;
-      } else {
-        // Add new airport entirely
-        AIRPORTS[icao] = data[icao];
-      }
-    });
-  } catch (e) {
-    console.warn("WDIP: Failed to load saved data from localStorage", e);
-  }
 }
 
 // ==========================================
@@ -612,14 +149,20 @@ function renderAirportCards() {
       const cardClass = isActive ? "airport-card" : "airport-card coming-soon";
 
       let meta = "";
-      if (isActive) {
+      if (isActive && apt.terminals) {
         const termCount = apt.terminals.filter((t) => !t.renovation).length;
-        const airlineCount = Object.keys(apt.airlines).length;
+        const airlineCount = Object.keys(apt.airlines || {}).length;
         meta = `
           <div class="airport-card-meta">
             <div class="airport-meta-item"><span class="meta-dot"></span>${termCount} Terminals</div>
             <div class="airport-meta-item"><span class="meta-dot"></span>${airlineCount}+ Airlines</div>
-            <div class="airport-meta-item"><span class="meta-dot"></span>${apt.fbos.length} FBOs</div>
+            <div class="airport-meta-item"><span class="meta-dot"></span>${(apt.fbos || []).length} FBOs</div>
+          </div>`;
+      } else if (isActive) {
+        // Active but not yet loaded — show basic info
+        meta = `
+          <div class="airport-card-meta">
+            <div class="airport-meta-item"><span class="meta-dot"></span>Click to load</div>
           </div>`;
       } else {
         meta = `
@@ -707,8 +250,8 @@ function bindEvents() {
       e.preventDefault();
       const items = dom.autocompleteDropdown.querySelectorAll(".autocomplete-item");
       if (autocompleteIndex >= 0 && items[autocompleteIndex]) {
-        const icao = items[autocompleteIndex].dataset.icao;
-        dom.airlineInput.value = icao;
+        const key = items[autocompleteIndex].dataset.key;
+        dom.airlineInput.value = key;
         hideAutocomplete();
         performSearch();
       } else {
@@ -737,17 +280,6 @@ function bindEvents() {
     if (!e.target.closest(".search-input-group")) {
       hideAutocomplete();
     }
-  });
-
-  // Map view toggle
-  dom.mapViewToggle.addEventListener("click", (e) => {
-    const btn = e.target.closest(".map-toggle-btn");
-    if (!btn) return;
-    const view = btn.dataset.view;
-    if (view === currentMapView) return;
-    switchMapView(view);
-    dom.mapViewToggle.querySelectorAll(".map-toggle-btn").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
   });
 
   // Contribute button
@@ -792,7 +324,20 @@ function bindEvents() {
 // AIRPORT OPEN/CLOSE
 // ==========================================
 
-function openAirport(icao) {
+async function openAirport(icao) {
+  // Load full data if not already loaded
+  if (!AIRPORTS[icao].terminals && AIRPORTS[icao].file) {
+    try {
+      const resp = await fetch(AIRPORTS[icao].file);
+      const data = await resp.json();
+      Object.assign(AIRPORTS[icao], data);
+    } catch (e) {
+      console.error(`Failed to load airport data for ${icao}`, e);
+      showModal("❌", "Load Error", `Could not load data for ${icao}. Please try again.`);
+      return;
+    }
+  }
+
   currentAirport = AIRPORTS[icao];
   selectedTerminal = null;
 
@@ -813,12 +358,6 @@ function openAirport(icao) {
   // Reset search state
   dom.airlineInput.value = "";
   resetInfoPanel();
-
-  // Reset map toggle to satellite
-  currentMapView = "satellite";
-  dom.mapViewToggle.querySelectorAll(".map-toggle-btn").forEach((b) => {
-    b.classList.toggle("active", b.dataset.view === "satellite");
-  });
 
   // Show edit button
   const editBtn = document.getElementById("editAirportBtn");
@@ -858,12 +397,10 @@ function closeAirport() {
 function renderAirportMap() {
   if (!currentAirport || !currentAirport.map) return;
 
-  // Destroy previous map if it exists
   destroyMap();
 
   const mapConfig = currentAirport.map;
 
-  // Initialize Leaflet map
   leafletMap = L.map("leafletMap", {
     center: mapConfig.center,
     zoom: mapConfig.zoom,
@@ -871,7 +408,6 @@ function renderAirportMap() {
     attributionControl: true,
   });
 
-  // Satellite tile layer (Esri World Imagery)
   satelliteTileLayer = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     {
@@ -880,16 +416,6 @@ function renderAirportMap() {
     }
   );
   satelliteTileLayer.addTo(leafletMap);
-
-  // FAA chart image overlay (hidden by default)
-  if (mapConfig.chartImage && mapConfig.chartBounds) {
-    chartOverlay = L.imageOverlay(
-      mapConfig.chartImage,
-      mapConfig.chartBounds,
-      { opacity: 0.92, interactive: false }
-    );
-    // Not added to map yet — toggled via switchMapView
-  }
 
   // Terminal rectangles
   terminalRectangles = {};
@@ -900,7 +426,6 @@ function renderAirportMap() {
     const rect = L.rectangle(term.bounds, style);
     rect.addTo(leafletMap);
 
-    // Tooltip
     let tooltipContent = `<strong>${term.name}</strong>`;
     if (isRenovation) {
       tooltipContent += `<span class="tooltip-renovation">Under Renovation</span>`;
@@ -913,7 +438,6 @@ function renderAirportMap() {
       offset: [0, -5],
     });
 
-    // Hover effects (only if not currently highlighted)
     rect.on("mouseover", () => {
       if (selectedTerminal !== term.id) {
         rect.setStyle(isRenovation ? RECT_STYLE_RENOVATION : RECT_STYLE_HOVER);
@@ -925,7 +449,6 @@ function renderAirportMap() {
       }
     });
 
-    // Click
     rect.on("click", () => {
       selectTerminal(term.id);
     });
@@ -963,9 +486,7 @@ function renderAirportMap() {
 }
 
 function highlightFBO(fboId) {
-  // Reset all FBO rectangles
   Object.values(fboRectangles).forEach((rect) => rect.setStyle(RECT_STYLE_FBO));
-  // Reset terminal selection too
   highlightTerminal(null);
 
   if (!fboId) return;
@@ -976,7 +497,6 @@ function highlightFBO(fboId) {
     leafletMap.panTo(rect.getCenter(), { animate: true, duration: 0.5 });
   }
 
-  // Show FBO info
   const fbo = currentAirport.fbos.find((f) => f.id === fboId);
   if (fbo) {
     dom.mapHint.textContent = fbo.name;
@@ -988,37 +508,12 @@ function destroyMap() {
     leafletMap.remove();
     leafletMap = null;
     satelliteTileLayer = null;
-    chartOverlay = null;
     terminalRectangles = {};
     fboRectangles = {};
   }
 }
 
-function switchMapView(view) {
-  if (!leafletMap) return;
-  currentMapView = view;
-
-  if (view === "satellite") {
-    // Show satellite tiles, hide chart
-    if (chartOverlay && leafletMap.hasLayer(chartOverlay)) {
-      leafletMap.removeLayer(chartOverlay);
-    }
-    if (!leafletMap.hasLayer(satelliteTileLayer)) {
-      satelliteTileLayer.addTo(leafletMap);
-    }
-  } else if (view === "chart") {
-    // Remove satellite tiles, show chart overlay
-    if (leafletMap.hasLayer(satelliteTileLayer)) {
-      leafletMap.removeLayer(satelliteTileLayer);
-    }
-    if (chartOverlay && !leafletMap.hasLayer(chartOverlay)) {
-      chartOverlay.addTo(leafletMap);
-    }
-  }
-}
-
 function highlightTerminal(terminalId) {
-  // Reset all rectangles to default
   if (currentAirport) {
     currentAirport.terminals.forEach((term) => {
       const rect = terminalRectangles[term.id];
@@ -1033,14 +528,12 @@ function highlightTerminal(terminalId) {
     return;
   }
 
-  // Highlight selected
   const rect = terminalRectangles[terminalId];
   const term = currentAirport.terminals.find((t) => t.id === terminalId);
   if (rect && term) {
     rect.setStyle(
       term.renovation ? RECT_STYLE_RENOVATION_HIGHLIGHTED : RECT_STYLE_HIGHLIGHTED
     );
-    // Pan to terminal
     leafletMap.panTo(rect.getCenter(), { animate: true, duration: 0.5 });
   }
 
@@ -1055,9 +548,9 @@ function selectTerminal(terminalId) {
   const term = currentAirport.terminals.find((t) => t.id === terminalId);
   if (!term) return;
 
-  const airlinesAtTerminal = Object.values(currentAirport.airlines).filter(
-    (a) => a.terminal === terminalId
-  );
+  const airlinesAtTerminal = Object.entries(currentAirport.airlines)
+    .filter(([, a]) => a.terminal === terminalId)
+    .map(([key, a]) => ({ key, ...a }));
 
   if (term.renovation) {
     showTerminalInfo(term, []);
@@ -1075,26 +568,53 @@ function selectTerminal(terminalId) {
 function performSearch() {
   if (!currentAirport) return;
 
-  const code = dom.airlineInput.value.trim().toUpperCase();
-  if (!code) return;
+  const input = dom.airlineInput.value.trim().toUpperCase();
+  if (!input) return;
 
   hideAutocomplete();
 
-  const airline = currentAirport.airlines[code];
-
-  if (airline) {
+  // Try exact key match first
+  if (currentAirport.airlines[input]) {
+    const airline = currentAirport.airlines[input];
+    const dbEntry = AIRLINES_DB[input];
     highlightTerminal(airline.terminal);
-    showAirlineInfo(airline);
+    showAirlineInfo(input, airline, dbEntry);
     dom.mapHint.textContent = `${airline.name} → ${airline.terminal}`;
-  } else {
-    highlightTerminal(null);
-    showNotFound(code);
-    dom.mapHint.textContent = "Airline not found";
+    return;
   }
+
+  // Try matching by ICAO field (for cargo variants etc)
+  const byIcao = Object.entries(currentAirport.airlines).find(
+    ([, a]) => a.icao === input
+  );
+  if (byIcao) {
+    const [key, airline] = byIcao;
+    const dbEntry = AIRLINES_DB[key];
+    highlightTerminal(airline.terminal);
+    showAirlineInfo(key, airline, dbEntry);
+    dom.mapHint.textContent = `${airline.name} → ${airline.terminal}`;
+    return;
+  }
+
+  // Try fuzzy search via airline DB
+  const results = searchAirlines(input, currentAirport.airlines);
+  if (results.length > 0) {
+    const match = results[0];
+    const airline = currentAirport.airlines[match.key];
+    const dbEntry = AIRLINES_DB[match.key];
+    highlightTerminal(airline.terminal);
+    showAirlineInfo(match.key, airline, dbEntry);
+    dom.mapHint.textContent = `${airline.name} → ${airline.terminal}`;
+    return;
+  }
+
+  highlightTerminal(null);
+  showNotFound(input);
+  dom.mapHint.textContent = "Airline not found";
 }
 
 function updateAutocomplete() {
-  const val = dom.airlineInput.value.trim().toUpperCase();
+  const val = dom.airlineInput.value.trim();
   autocompleteIndex = -1;
 
   if (!val || !currentAirport) {
@@ -1102,13 +622,7 @@ function updateAutocomplete() {
     return;
   }
 
-  const matches = Object.values(currentAirport.airlines)
-    .filter(
-      (a) =>
-        a.icao.startsWith(val) ||
-        a.name.toUpperCase().includes(val)
-    )
-    .slice(0, 8);
+  const matches = searchAirlines(val, currentAirport.airlines).slice(0, 8);
 
   if (matches.length === 0) {
     hideAutocomplete();
@@ -1118,10 +632,11 @@ function updateAutocomplete() {
   dom.autocompleteDropdown.innerHTML = matches
     .map(
       (a) => `
-    <div class="autocomplete-item" data-icao="${a.icao}">
-      <span class="autocomplete-icao">${a.icao}</span>
+    <div class="autocomplete-item" data-key="${a.key}">
+      <span class="autocomplete-icao">${a.icao}${a.cargo ? ' <span class="autocomplete-cargo">CARGO</span>' : ""}</span>
       <span class="autocomplete-name">${a.name}</span>
-      <span class="autocomplete-terminal">${a.terminal}</span>
+      ${a.callsign ? `<span class="autocomplete-callsign">${a.callsign}</span>` : ""}
+      <span class="autocomplete-terminal">${a.terminal || ""}</span>
     </div>`
     )
     .join("");
@@ -1130,7 +645,7 @@ function updateAutocomplete() {
 
   dom.autocompleteDropdown.querySelectorAll(".autocomplete-item").forEach((item) => {
     item.addEventListener("click", () => {
-      dom.airlineInput.value = item.dataset.icao;
+      dom.airlineInput.value = item.dataset.key;
       hideAutocomplete();
       performSearch();
     });
@@ -1165,21 +680,24 @@ function resetInfoPanel() {
   dom.mapHint.textContent = "Click a terminal or search an airline";
 }
 
-function showAirlineInfo(airline) {
+function showAirlineInfo(key, airline, dbEntry) {
   const term = currentAirport.terminals.find((t) => t.id === airline.terminal);
-  const otherAirlines = Object.values(currentAirport.airlines).filter(
-    (a) => a.terminal === airline.terminal && a.icao !== airline.icao
-  );
+  const otherAirlines = Object.entries(currentAirport.airlines)
+    .filter(([k, a]) => a.terminal === airline.terminal && k !== key)
+    .map(([k, a]) => ({ key: k, ...a }));
+
+  const callsign = dbEntry ? dbEntry.callsign : null;
+  const isCargo = dbEntry ? dbEntry.cargo : false;
 
   dom.infoPlaceholder.style.display = "none";
   dom.infoContent.style.display = "block";
 
   dom.infoContent.innerHTML = `
     <div class="info-airline-header">
-      <div class="airline-icon">${airline.icao}</div>
+      <div class="airline-icon">${airline.icao}${isCargo ? '<span class="cargo-badge-sm">C</span>' : ""}</div>
       <div class="airline-details">
         <h3>${airline.name}</h3>
-        <span class="airline-icao-label">ICAO: ${airline.icao}</span>
+        <span class="airline-icao-label">ICAO: ${airline.icao}${callsign ? ` — Callsign: ${callsign}` : ""}</span>
       </div>
     </div>
     <div class="info-grid">
@@ -1208,7 +726,7 @@ function showAirlineInfo(airline) {
           ${otherAirlines
             .map(
               (a) =>
-                `<span class="airline-tag" data-icao="${a.icao}" title="${a.name}">${a.icao}</span>`
+                `<span class="airline-tag" data-key="${a.key}" title="${a.name}">${a.icao}${a.cargo || (AIRLINES_DB[a.key] && AIRLINES_DB[a.key].cargo) ? " (C)" : ""}</span>`
             )
             .join("")}
         </div>
@@ -1218,8 +736,8 @@ function showAirlineInfo(airline) {
 
   dom.infoContent.querySelectorAll(".airline-tag").forEach((tag) => {
     tag.addEventListener("click", () => {
-      const icao = tag.dataset.icao;
-      dom.airlineInput.value = icao;
+      const k = tag.dataset.key;
+      dom.airlineInput.value = k;
       performSearch();
     });
   });
@@ -1273,7 +791,7 @@ function showTerminalInfo(term, airlines) {
           ${airlines
             .map(
               (a) =>
-                `<span class="airline-tag" data-icao="${a.icao}" title="${a.name}">${a.icao}</span>`
+                `<span class="airline-tag" data-key="${a.key}" title="${a.name}">${a.icao}${a.cargo || (AIRLINES_DB[a.key] && AIRLINES_DB[a.key].cargo) ? " (C)" : ""}</span>`
             )
             .join("")}
         </div>
@@ -1283,8 +801,8 @@ function showTerminalInfo(term, airlines) {
 
   dom.infoContent.querySelectorAll(".airline-tag").forEach((tag) => {
     tag.addEventListener("click", () => {
-      const icao = tag.dataset.icao;
-      dom.airlineInput.value = icao;
+      const k = tag.dataset.key;
+      dom.airlineInput.value = k;
       performSearch();
     });
   });
@@ -1298,7 +816,7 @@ function showNotFound(code) {
     <div class="info-not-found">
       <div class="nf-icon">🔍</div>
       <h3>Airline Not Found</h3>
-      <p>"${code}" was not found at ${currentAirport.icao}. Check the ICAO code or try using the autocomplete suggestions.</p>
+      <p>"${code}" was not found at ${currentAirport.icao}. Try searching by airline name or callsign.</p>
     </div>`;
 }
 
@@ -1317,7 +835,7 @@ function renderQuickAirlines() {
     currentAirport.quickAirlines
       .map(
         (icao) =>
-          `<button class="quick-btn" data-icao="${icao}">${icao}</button>`
+          `<button class="quick-btn" data-key="${icao}">${icao}</button>`
       )
       .join("");
 
@@ -1325,7 +843,7 @@ function renderQuickAirlines() {
 
   dom.quickAirlines.querySelectorAll(".quick-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      dom.airlineInput.value = btn.dataset.icao;
+      dom.airlineInput.value = btn.dataset.key;
       performSearch();
     });
   });
@@ -1353,7 +871,6 @@ function renderFBOs() {
     )
     .join("");
 
-  // Add hover/click events for FBO map highlighting
   dom.fboList.querySelectorAll(".fbo-item").forEach((item) => {
     const fboId = item.dataset.fboId;
     if (!fboId || !fboRectangles[fboId]) return;

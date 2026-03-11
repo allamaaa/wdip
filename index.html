@@ -103,8 +103,8 @@
       <div class="search-bar-container">
         <div class="search-bar">
           <div class="search-input-group">
-            <label class="search-label">Airline ICAO Code</label>
-            <input type="text" id="airlineInput" class="search-input" placeholder="e.g. DAL, AAL, JBU" maxlength="4" autocomplete="off" spellcheck="false">
+            <label class="search-label">Search Airlines</label>
+            <input type="text" id="airlineInput" class="search-input" placeholder="Search by ICAO, name, or callsign..." autocomplete="off" spellcheck="false">
             <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
           </div>
           <button class="search-btn" id="searchBtn">
@@ -126,7 +126,6 @@
               <h3>Airport Map</h3>
               <div class="map-view-toggle" id="mapViewToggle">
                 <button class="map-toggle-btn active" data-view="satellite">Satellite</button>
-                <button class="map-toggle-btn" data-view="chart">FAA Chart</button>
               </div>
               <span class="map-hint" id="mapHint">Click a terminal or search an airline</span>
             </div>
@@ -254,6 +253,7 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="airlines-db.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
