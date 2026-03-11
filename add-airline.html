@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Airline — WDIP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body class="edit-page">
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">✈</span>
+        <span class="logo-text">WDIP</span>
+        <span class="logo-sub">airlines</span>
+      </a>
+      <div class="editor-nav-actions">
+        <a href="index.html" class="editor-back-link">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M16 10H4m0 0l4-4m-4 4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back
+        </a>
+        <button class="editor-settings-btn" id="settingsBtn" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.5"/><path d="M16.47 11.13a1.25 1.25 0 00.25 1.38l.05.04a1.5 1.5 0 11-2.13 2.13l-.04-.05a1.25 1.25 0 00-2.13.88v.12a1.5 1.5 0 01-3 0v-.06a1.25 1.25 0 00-.82-1.15 1.25 1.25 0 00-1.38.25l-.04.05a1.5 1.5 0 11-2.13-2.13l.05-.04a1.25 1.25 0 00-.88-2.13H4.5a1.5 1.5 0 010-3h.06a1.25 1.25 0 001.15-.82 1.25 1.25 0 00-.25-1.38l-.05-.04A1.5 1.5 0 117.54 3.1l.04.05a1.25 1.25 0 001.38.25H9a1.25 1.25 0 00.75-1.15V2a1.5 1.5 0 013 0v.06a1.25 1.25 0 00.75 1.15 1.25 1.25 0 001.38-.25l.04-.05a1.5 1.5 0 112.13 2.13l-.05.04a1.25 1.25 0 00-.25 1.38V6.5a1.25 1.25 0 001.15.75h.35a1.5 1.5 0 010 3h-.06a1.25 1.25 0 00-1.15.75z" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="form-page-main" style="max-width: 900px;">
+    <h1 class="form-page-title">AIRLINES DATABASE</h1>
+    <p class="form-page-subtitle">Browse all airlines or add a new one to the global database.</p>
+
+    <!-- Search + Add button row -->
+    <div class="airline-list-header">
+      <div class="airline-list-search">
+        <input class="form-input" id="airlineSearchInput" placeholder="Search by ICAO, name, or callsign..." spellcheck="false">
+      </div>
+      <span class="airline-list-count" id="airlineCount"></span>
+      <button class="form-submit-btn" id="addNewBtn">
+        + Add New Airline
+      </button>
+    </div>
+
+    <!-- Add Airline Form (hidden by default) -->
+    <div class="form-card" id="addAirlineForm" style="display: none;">
+      <h3 style="margin-bottom: 16px; font-size: 16px; color: var(--text-primary);">New Airline</h3>
+      <div class="form-field">
+        <label>Key (Database Code)</label>
+        <input class="form-input mono" id="newKey" placeholder="AAL" spellcheck="false">
+        <p class="form-input-hint">Unique key in the database. For cargo variants, check the Cargo box below (adds _C suffix automatically).</p>
+        <p class="form-error" id="keyError"></p>
+      </div>
+      <div class="form-field">
+        <label>Full Name</label>
+        <input class="form-input" id="newName" placeholder="American Airlines" spellcheck="false">
+      </div>
+      <div class="form-field">
+        <label>ICAO Callsign Code</label>
+        <input class="form-input mono" id="newIcao" placeholder="AAL" spellcheck="false">
+      </div>
+      <div class="form-field">
+        <label>Phonetic Callsign</label>
+        <input class="form-input" id="newCallsign" placeholder="AMERICAN" spellcheck="false">
+      </div>
+      <div class="form-field">
+        <label class="form-checkbox-label">
+          <input type="checkbox" id="newCargo"> Cargo airline (adds _C suffix to key)
+        </label>
+      </div>
+      <div class="form-actions">
+        <button class="form-cancel-btn" id="cancelAddBtn">Cancel</button>
+        <button class="form-submit-btn" id="saveAirlineBtn">Save Airline</button>
+      </div>
+    </div>
+
+    <!-- Airline List -->
+    <div class="airline-list" id="airlineList">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="airline-pagination" id="pagination"></div>
+  </main>
+
+  <!-- Toast + Settings injected by settings.js -->
+
+  <script src="airlines-db.js"></script>
+  <script src="github-api.js"></script>
+  <script src="settings.js"></script>
+  <script src="add-airline.js"></script>
+</body>
+</html>

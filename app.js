@@ -6,8 +6,7 @@
 // DATA (loaded async)
 // ==========================================
 
-// Always fetch data from the GitHub repo so changes show up instantly after saves.
-const DATA_BASE = "https://raw.githubusercontent.com/allamaaa/wdip/main/";
+// DATA_BASE and GITHUB_REPO are defined in github-api.js
 
 let AIRPORTS = {};
 
@@ -32,7 +31,6 @@ const dom = {
   infoPlaceholder: document.getElementById("infoPlaceholder"),
   infoContent: document.getElementById("infoContent"),
   fboList: document.getElementById("fboList"),
-  contributeBtn: document.getElementById("contributeBtn"),
   modalOverlay: document.getElementById("modalOverlay"),
   modal: document.getElementById("modal"),
   modalClose: document.getElementById("modalClose"),
@@ -137,6 +135,7 @@ async function init() {
     return;
   }
 
+  initSettings();
   renderAirportCards();
   bindEvents();
 }
@@ -292,14 +291,14 @@ function bindEvents() {
     }
   });
 
-  // Contribute button
-  dom.contributeBtn.addEventListener("click", () => {
-    showModal(
-      "🚀",
-      "Coming Soon",
-      "The community contribution system is under development. Soon you'll be able to add terminal data for any airport in the world!"
-    );
-  });
+  // Edit Airport contribute box — smooth scroll to airports section
+  const editAirportBox = document.getElementById("editAirportBox");
+  if (editAirportBox) {
+    editAirportBox.addEventListener("click", (e) => {
+      e.preventDefault();
+      document.getElementById("airports").scrollIntoView({ behavior: "smooth" });
+    });
+  }
 
   // Modal
   dom.modalClose.addEventListener("click", closeModal);

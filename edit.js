@@ -13,21 +13,17 @@ let satelliteTileLayer = null;
 let termRects = {};
 let fboRects = {};
 let dragHandles = {};
+let deleteButtons = {};
 let selectedRectId = null;
 let hasUnsavedChanges = false;
 let nextTermId = 100;
 let nextFboId = 100;
 
-// Always fetch data from the GitHub repo so changes show up instantly after saves.
-const DATA_BASE = "https://raw.githubusercontent.com/allamaaa/wdip/main/";
-
 // Save API — set this to your Cloudflare Worker URL for public saves
 // When set, anyone can save without needing a GitHub token.
-// Example: "https://wdip-save.yourname.workers.dev"
 const SAVE_API_URL = "";
 
-// Fallback GitHub config (only used when SAVE_API_URL is empty)
-const GITHUB_REPO = "allamaaa/wdip";
+// DATA_BASE and GITHUB_REPO are defined in github-api.js
 
 // ==========================================
 // INIT
@@ -54,6 +50,7 @@ async function init() {
 
   document.getElementById("backLink").href = `index.html#airports`;
 
+  initSettings();
   renderHeader();
   initMap();
   renderTerminalCards();
@@ -79,9 +76,38 @@ async function loadAirportData(code) {
 // ==========================================
 
 function renderHeader() {
-  document.getElementById("editorHeader").innerHTML = `
-    <span class="editor-icao">${airportData.icao}</span>
-    <span class="editor-name">${airportData.name}</span>`;
+  const header = document.getElementById("editorHeader");
+  header.innerHTML = `
+    <div class="editor-meta-grid">
+      <div class="editor-meta-field">
+        <label>ICAO</label>
+        <input class="editor-card-input editor-meta-locked" value="${escapeHtml(airportData.icao)}" disabled title="ICAO is tied to filename and cannot be changed">
+      </div>
+      <div class="editor-meta-field">
+        <label>IATA</label>
+        <input class="editor-card-input" id="metaIata" value="${escapeHtml(airportData.iata || '')}" placeholder="JFK" spellcheck="false">
+      </div>
+      <div class="editor-meta-field editor-meta-wide">
+        <label>Airport Name</label>
+        <input class="editor-card-input" id="metaName" value="${escapeHtml(airportData.name || '')}" placeholder="John F. Kennedy International Airport" spellcheck="false">
+      </div>
+      <div class="editor-meta-field editor-meta-wide">
+        <label>City / Location</label>
+        <input class="editor-card-input" id="metaCity" value="${escapeHtml(airportData.city || '')}" placeholder="New York, NY" spellcheck="false">
+      </div>
+    </div>`;
+
+  // Bind change events to update airportData
+  ["metaIata", "metaName", "metaCity"].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.addEventListener("input", () => {
+        const fieldMap = { metaIata: "iata", metaName: "name", metaCity: "city" };
+        airportData[fieldMap[id]] = input.value.trim();
+        markChanged();
+      });
+    }
+  });
 }
 
 // ==========================================
@@ -163,6 +189,60 @@ function createDragHandle(rect, type, id) {
     }
     // Sync handle position
     marker.setLatLng(rect.getCenter());
+    // Sync delete button position
+    const delKey = `${type}_${id}`;
+    if (deleteButtons[delKey]) {
+      const b = rect.getBounds();
+      deleteButtons[delKey].setLatLng(L.latLng(b.getNorth(), b.getEast()));
+    }
+  });
+
+  return marker;
+}
+
+function createDeleteButton(rect, type, id) {
+  const bounds = rect.getBounds();
+  const pos = L.latLng(bounds.getNorth(), bounds.getEast());
+
+  const icon = L.divIcon({
+    className: "rect-delete-btn",
+    html: "&times;",
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+  });
+
+  const marker = L.marker(pos, {
+    icon,
+    interactive: true,
+    zIndexOffset: 1100,
+  });
+  marker.addTo(editMap);
+
+  marker.on("click", (e) => {
+    L.DomEvent.stopPropagation(e);
+    const entityName = type === "term" ? "terminal" : "FBO";
+    if (!confirm(`Delete this ${entityName}?`)) return;
+
+    if (type === "term") {
+      // Remove airlines assigned to this terminal
+      Object.keys(airportData.airlines).forEach(code => {
+        if (airportData.airlines[code].terminal === id) delete airportData.airlines[code];
+      });
+      airportData.terminals = airportData.terminals.filter(t => t.id !== id);
+      if (termRects[id]) { editMap.removeLayer(termRects[id]); delete termRects[id]; }
+      if (dragHandles[`term_${id}`]) { editMap.removeLayer(dragHandles[`term_${id}`]); delete dragHandles[`term_${id}`]; }
+      renderTerminalCards();
+    } else {
+      airportData.fbos = airportData.fbos.filter(f => f.id !== id);
+      if (fboRects[id]) { editMap.removeLayer(fboRects[id]); delete fboRects[id]; }
+      if (dragHandles[`fbo_${id}`]) { editMap.removeLayer(dragHandles[`fbo_${id}`]); delete dragHandles[`fbo_${id}`]; }
+      renderFBOCards();
+    }
+
+    // Remove the delete button itself
+    editMap.removeLayer(marker);
+    delete deleteButtons[`${type}_${id}`];
+    markChanged();
   });
 
   return marker;
@@ -196,9 +276,13 @@ function drawTerminalRects() {
     // Listen for vertex drag (resize)
     rect.on("editable:vertex:dragend", () => {
       updateTermBounds(term.id, rect);
-      // Sync handle position after resize
+      // Sync handle + delete button positions after resize
       if (dragHandles[`term_${term.id}`]) {
         dragHandles[`term_${term.id}`].setLatLng(rect.getCenter());
+      }
+      if (deleteButtons[`term_${term.id}`]) {
+        const b = rect.getBounds();
+        deleteButtons[`term_${term.id}`].setLatLng(L.latLng(b.getNorth(), b.getEast()));
       }
     });
 
@@ -206,9 +290,12 @@ function drawTerminalRects() {
 
     termRects[term.id] = rect;
 
-    // Create drag handle
+    // Create drag handle and delete button
     const handle = createDragHandle(rect, "term", term.id);
     dragHandles[`term_${term.id}`] = handle;
+
+    const delBtn = createDeleteButton(rect, "term", term.id);
+    deleteButtons[`term_${term.id}`] = delBtn;
   });
 }
 
@@ -240,6 +327,10 @@ function drawFBORects() {
       if (dragHandles[`fbo_${fbo.id}`]) {
         dragHandles[`fbo_${fbo.id}`].setLatLng(rect.getCenter());
       }
+      if (deleteButtons[`fbo_${fbo.id}`]) {
+        const b = rect.getBounds();
+        deleteButtons[`fbo_${fbo.id}`].setLatLng(L.latLng(b.getNorth(), b.getEast()));
+      }
     });
 
     rect.on("click", () => selectRect("fbo", fbo.id));
@@ -248,6 +339,9 @@ function drawFBORects() {
 
     const handle = createDragHandle(rect, "fbo", fbo.id);
     dragHandles[`fbo_${fbo.id}`] = handle;
+
+    const delBtn = createDeleteButton(rect, "fbo", fbo.id);
+    deleteButtons[`fbo_${fbo.id}`] = delBtn;
   });
 }
 
@@ -504,6 +598,10 @@ function bindTerminalCardEvents() {
         editMap.removeLayer(dragHandles[`term_${termId}`]);
         delete dragHandles[`term_${termId}`];
       }
+      if (deleteButtons[`term_${termId}`]) {
+        editMap.removeLayer(deleteButtons[`term_${termId}`]);
+        delete deleteButtons[`term_${termId}`];
+      }
 
       markChanged();
       renderTerminalCards();
@@ -589,6 +687,10 @@ function bindFBOCardEvents() {
         editMap.removeLayer(dragHandles[`fbo_${fboId}`]);
         delete dragHandles[`fbo_${fboId}`];
       }
+      if (deleteButtons[`fbo_${fboId}`]) {
+        editMap.removeLayer(deleteButtons[`fbo_${fboId}`]);
+        delete deleteButtons[`fbo_${fboId}`];
+      }
 
       markChanged();
       renderFBOCards();
@@ -646,6 +748,10 @@ function addTerminal() {
     if (dragHandles[`term_${id}`]) {
       dragHandles[`term_${id}`].setLatLng(rect.getCenter());
     }
+    if (deleteButtons[`term_${id}`]) {
+      const b = rect.getBounds();
+      deleteButtons[`term_${id}`].setLatLng(L.latLng(b.getNorth(), b.getEast()));
+    }
   });
   rect.on("click", () => selectRect("term", id));
 
@@ -653,6 +759,9 @@ function addTerminal() {
 
   const handle = createDragHandle(rect, "term", id);
   dragHandles[`term_${id}`] = handle;
+
+  const delBtn = createDeleteButton(rect, "term", id);
+  deleteButtons[`term_${id}`] = delBtn;
 
   markChanged();
   renderTerminalCards();
@@ -700,6 +809,10 @@ function addFBO() {
     if (dragHandles[`fbo_${id}`]) {
       dragHandles[`fbo_${id}`].setLatLng(rect.getCenter());
     }
+    if (deleteButtons[`fbo_${id}`]) {
+      const b = rect.getBounds();
+      deleteButtons[`fbo_${id}`].setLatLng(L.latLng(b.getNorth(), b.getEast()));
+    }
   });
   rect.on("click", () => selectRect("fbo", id));
 
@@ -707,6 +820,9 @@ function addFBO() {
 
   const handle = createDragHandle(rect, "fbo", id);
   dragHandles[`fbo_${id}`] = handle;
+
+  const delBtn = createDeleteButton(rect, "fbo", id);
+  deleteButtons[`fbo_${id}`] = delBtn;
 
   markChanged();
   renderFBOCards();
@@ -766,42 +882,7 @@ async function saveViaWorker(url) {
 async function saveViaGitHub(token) {
   const filePath = `data/${icao.toLowerCase()}.json`;
   const content = JSON.stringify(airportData, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(content)));
-
-  // Get current file SHA
-  let sha = null;
-  try {
-    const getResp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`, {
-      headers: { Authorization: `token ${token}` },
-    });
-    if (getResp.ok) {
-      const fileData = await getResp.json();
-      sha = fileData.sha;
-    }
-  } catch (e) {
-    // File might not exist yet
-  }
-
-  // PUT to update/create file
-  const body = {
-    message: `Update ${icao} airport data`,
-    content: encoded,
-  };
-  if (sha) body.sha = sha;
-
-  const putResp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`, {
-    method: "PUT",
-    headers: {
-      Authorization: `token ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!putResp.ok) {
-    const err = await putResp.json();
-    throw new Error(err.message || "GitHub API error");
-  }
+  await saveFileToGitHub(token, filePath, content, `Update ${icao} airport data`);
 }
 
 function exportJSON() {
@@ -823,71 +904,7 @@ function resetToDefaults() {
   window.location.reload();
 }
 
-// ==========================================
-// SETTINGS PANEL
-// ==========================================
-
-function showSettingsPanel() {
-  const overlay = document.getElementById("settingsOverlay");
-  const urlInput = document.getElementById("workerUrlInput");
-  const tokenInput = document.getElementById("ghTokenInput");
-  if (urlInput) urlInput.value = localStorage.getItem("wdip_save_url") || "";
-  if (tokenInput) tokenInput.value = localStorage.getItem("wdip_gh_token") || "";
-
-  // Show connection status
-  updateSettingsStatus();
-  overlay.classList.add("active");
-}
-
-function hideSettingsPanel() {
-  document.getElementById("settingsOverlay").classList.remove("active");
-}
-
-function updateSettingsStatus() {
-  const statusEl = document.getElementById("settingsStatus");
-  if (!statusEl) return;
-
-  const workerUrl = SAVE_API_URL || localStorage.getItem("wdip_save_url");
-  const token = localStorage.getItem("wdip_gh_token");
-
-  if (SAVE_API_URL) {
-    statusEl.innerHTML = '<span class="status-connected">✓ Save Worker is configured globally</span>';
-  } else if (workerUrl) {
-    statusEl.innerHTML = '<span class="status-connected">✓ Using custom Worker URL</span>';
-  } else if (token) {
-    statusEl.innerHTML = '<span class="status-connected">✓ Using GitHub token (local only)</span>';
-  } else {
-    statusEl.innerHTML = '<span class="status-disconnected">✗ Not configured — saves won\'t work</span>';
-  }
-}
-
-function saveSettings() {
-  const urlInput = document.getElementById("workerUrlInput");
-  const tokenInput = document.getElementById("ghTokenInput");
-
-  const url = urlInput ? urlInput.value.trim() : "";
-  const token = tokenInput ? tokenInput.value.trim() : "";
-
-  if (url) {
-    localStorage.setItem("wdip_save_url", url);
-  } else {
-    localStorage.removeItem("wdip_save_url");
-  }
-
-  if (token) {
-    localStorage.setItem("wdip_gh_token", token);
-  } else {
-    localStorage.removeItem("wdip_gh_token");
-  }
-
-  if (url || token) {
-    showToast("Settings saved!");
-  } else {
-    showToast("Settings cleared");
-  }
-
-  hideSettingsPanel();
-}
+// Settings panel functions are in settings.js (shared)
 
 // ==========================================
 // HELPERS
@@ -913,19 +930,7 @@ function updateSaveButtonState() {
   }
 }
 
-function showToast(message, isError = false) {
-  const toast = document.getElementById("toast");
-  toast.textContent = message;
-  toast.className = "editor-toast" + (isError ? " error" : "") + " active";
-  setTimeout(() => {
-    toast.classList.remove("active");
-  }, 2500);
-}
-
-function escapeHtml(str) {
-  if (!str) return "";
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
+// showToast() and escapeHtml() are in settings.js (shared)
 
 // ==========================================
 // EVENTS
@@ -937,14 +942,7 @@ function bindEvents() {
   document.getElementById("resetBtn").addEventListener("click", resetToDefaults);
   document.getElementById("addTerminalBtn").addEventListener("click", addTerminal);
   document.getElementById("addFBOBtn").addEventListener("click", addFBO);
-  document.getElementById("settingsBtn").addEventListener("click", showSettingsPanel);
-  document.getElementById("settingsClose").addEventListener("click", hideSettingsPanel);
-  document.getElementById("settingsSave").addEventListener("click", saveSettings);
-
-  // Close settings on overlay click
-  document.getElementById("settingsOverlay").addEventListener("click", (e) => {
-    if (e.target.id === "settingsOverlay") hideSettingsPanel();
-  });
+  // Settings events are bound by initSettings() in settings.js
 
   window.addEventListener("beforeunload", (e) => {
     if (hasUnsavedChanges) {

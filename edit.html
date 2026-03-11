@@ -102,43 +102,13 @@
     </div>
   </main>
 
-  <!-- Toast notification -->
-  <div class="editor-toast" id="toast"></div>
-
-  <!-- Settings Overlay -->
-  <div class="settings-overlay" id="settingsOverlay">
-    <div class="settings-panel">
-      <div class="settings-header">
-        <h3>Save Settings</h3>
-        <button class="settings-close-btn" id="settingsClose">&times;</button>
-      </div>
-      <div class="settings-body">
-        <div id="settingsStatus" class="settings-status"></div>
-
-        <div class="settings-field">
-          <label>Save Worker URL</label>
-          <p class="settings-hint">A Cloudflare Worker that proxies saves to GitHub. When configured, <strong>anyone</strong> can save without a token. See <code>save-worker.js</code> in the repo for the worker code.</p>
-          <input type="url" class="settings-input" id="workerUrlInput" placeholder="https://wdip-save.yourname.workers.dev" spellcheck="false">
-        </div>
-
-        <div class="settings-divider">
-          <span>or</span>
-        </div>
-
-        <div class="settings-field">
-          <label>GitHub Personal Access Token</label>
-          <p class="settings-hint">Direct GitHub API access (saves only for you). Create a token at <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">github.com/settings/tokens</a>.</p>
-          <input type="password" class="settings-input" id="ghTokenInput" placeholder="ghp_xxxxxxxxxxxx" spellcheck="false">
-        </div>
-
-        <button class="settings-save-btn" id="settingsSave">Save Settings</button>
-      </div>
-    </div>
-  </div>
+  <!-- Toast + Settings injected by settings.js -->
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet-editable@1.2.0/src/Leaflet.Editable.js"></script>
   <script src="airlines-db.js"></script>
+  <script src="github-api.js"></script>
+  <script src="settings.js"></script>
   <script src="edit.js"></script>
 </body>
 </html>

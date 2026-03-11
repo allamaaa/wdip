@@ -26,9 +26,14 @@
         <a href="#contribute" class="nav-link">Contribute</a>
         <a href="#about" class="nav-link">About</a>
       </div>
-      <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="nav-actions">
+        <button class="editor-settings-btn" id="settingsBtn" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.5"/><path d="M16.47 11.13a1.25 1.25 0 00.25 1.38l.05.04a1.5 1.5 0 11-2.13 2.13l-.04-.05a1.25 1.25 0 00-2.13.88v.12a1.5 1.5 0 01-3 0v-.06a1.25 1.25 0 00-.82-1.15 1.25 1.25 0 00-1.38.25l-.04.05a1.5 1.5 0 11-2.13-2.13l.05-.04a1.25 1.25 0 00-.88-2.13H4.5a1.5 1.5 0 010-3h.06a1.25 1.25 0 001.15-.82 1.25 1.25 0 00-.25-1.38l-.05-.04A1.5 1.5 0 117.54 3.1l.04.05a1.25 1.25 0 001.38.25H9a1.25 1.25 0 00.75-1.15V2a1.5 1.5 0 013 0v.06a1.25 1.25 0 00.75 1.15 1.25 1.25 0 001.38-.25l.04-.05a1.5 1.5 0 112.13 2.13l-.05.04a1.25 1.25 0 00-.25 1.38V6.5a1.25 1.25 0 001.15.75h.35a1.5 1.5 0 010 3h-.06a1.25 1.25 0 00-1.15.75z" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -167,50 +172,26 @@
   <!-- Contribute Section -->
   <section class="contribute-section" id="contribute">
     <div class="container">
-      <div class="contribute-card">
-        <div class="contribute-content">
-          <span class="section-tag">Community</span>
-          <h2 class="section-title">Help Us Grow</h2>
-          <p class="section-desc">Know your home airport inside and out? Help the flight sim community by contributing terminal and gate data for airports around the world.</p>
-          <div class="contribute-features">
-            <div class="contribute-feature">
-              <span class="feature-icon">🗺️</span>
-              <div>
-                <strong>Add Airports</strong>
-                <p>Submit terminal maps and gate assignments for new airports</p>
-              </div>
-            </div>
-            <div class="contribute-feature">
-              <span class="feature-icon">🔄</span>
-              <div>
-                <strong>Update Data</strong>
-                <p>Keep existing airports accurate as airlines change gates</p>
-              </div>
-            </div>
-            <div class="contribute-feature">
-              <span class="feature-icon">✅</span>
-              <div>
-                <strong>Verify Info</strong>
-                <p>Confirm gate assignments from your real-world spotting</p>
-              </div>
-            </div>
-          </div>
-          <button class="contribute-btn" id="contributeBtn">
-            Add an Airport
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12m-6-6h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
-        </div>
-        <div class="contribute-visual">
-          <div class="visual-globe">
-            <div class="globe-ring ring-1"></div>
-            <div class="globe-ring ring-2"></div>
-            <div class="globe-ring ring-3"></div>
-            <div class="globe-dot dot-1"></div>
-            <div class="globe-dot dot-2"></div>
-            <div class="globe-dot dot-3"></div>
-            <div class="globe-dot dot-4"></div>
-            <div class="globe-dot dot-5"></div>
-          </div>
+      <div class="contribute-content" style="text-align:center;">
+        <span class="section-tag">Community</span>
+        <h2 class="section-title">Help Us Grow</h2>
+        <p class="section-desc">Know your home airport inside and out? Help the flight sim community by contributing terminal and gate data for airports around the world.</p>
+        <div class="contribute-boxes">
+          <a href="add-airport.html" class="contribute-box">
+            <div class="contribute-box-icon">🗺️</div>
+            <h3>Add an Airport</h3>
+            <p>Submit a new airport with terminal maps and gate assignments</p>
+          </a>
+          <a href="#airports" class="contribute-box" id="editAirportBox">
+            <div class="contribute-box-icon">✏️</div>
+            <h3>Edit an Airport</h3>
+            <p>Update or correct data for an existing airport</p>
+          </a>
+          <a href="add-airline.html" class="contribute-box">
+            <div class="contribute-box-icon">✈️</div>
+            <h3>Add an Airline</h3>
+            <p>Add a new airline to the global database</p>
+          </a>
         </div>
       </div>
     </div>
@@ -254,6 +235,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="airlines-db.js"></script>
+  <script src="github-api.js"></script>
+  <script src="settings.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

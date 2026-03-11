@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Airport — WDIP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body class="edit-page">
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">✈</span>
+        <span class="logo-text">WDIP</span>
+        <span class="logo-sub">add airport</span>
+      </a>
+      <div class="editor-nav-actions">
+        <a href="index.html" class="editor-back-link">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M16 10H4m0 0l4-4m-4 4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back
+        </a>
+        <button class="editor-settings-btn" id="settingsBtn" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.5"/><path d="M16.47 11.13a1.25 1.25 0 00.25 1.38l.05.04a1.5 1.5 0 11-2.13 2.13l-.04-.05a1.25 1.25 0 00-2.13.88v.12a1.5 1.5 0 01-3 0v-.06a1.25 1.25 0 00-.82-1.15 1.25 1.25 0 00-1.38.25l-.04.05a1.5 1.5 0 11-2.13-2.13l.05-.04a1.25 1.25 0 00-.88-2.13H4.5a1.5 1.5 0 010-3h.06a1.25 1.25 0 001.15-.82 1.25 1.25 0 00-.25-1.38l-.05-.04A1.5 1.5 0 117.54 3.1l.04.05a1.25 1.25 0 001.38.25H9a1.25 1.25 0 00.75-1.15V2a1.5 1.5 0 013 0v.06a1.25 1.25 0 00.75 1.15 1.25 1.25 0 001.38-.25l.04-.05a1.5 1.5 0 112.13 2.13l-.05.04a1.25 1.25 0 00-.25 1.38V6.5a1.25 1.25 0 001.15.75h.35a1.5 1.5 0 010 3h-.06a1.25 1.25 0 00-1.15.75z" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="form-page-main">
+    <h1 class="form-page-title">ADD AIRPORT</h1>
+    <p class="form-page-subtitle">Submit a new airport to the WDIP database.</p>
+
+    <div class="form-card">
+      <div class="form-field">
+        <label>ICAO Code</label>
+        <input class="form-input mono" id="icaoInput" placeholder="KJFK" maxlength="4" spellcheck="false">
+        <p class="form-input-hint">4-letter ICAO identifier (e.g., KJFK, EGLL, RJTT)</p>
+        <p class="form-error" id="icaoError"></p>
+      </div>
+      <div class="form-field">
+        <label>IATA Code</label>
+        <input class="form-input mono" id="iataInput" placeholder="JFK" maxlength="3" spellcheck="false">
+      </div>
+      <div class="form-field">
+        <label>Airport Name</label>
+        <input class="form-input" id="nameInput" placeholder="John F. Kennedy International Airport" spellcheck="false">
+      </div>
+      <div class="form-field">
+        <label>City / Location</label>
+        <input class="form-input" id="cityInput" placeholder="New York, NY" spellcheck="false">
+      </div>
+
+      <!-- Map Preview -->
+      <div class="form-field">
+        <label>Location Preview</label>
+        <div class="map-card" style="margin-top: 8px;">
+          <div class="map-wrapper" id="mapWrapper" style="height: 300px; border-radius: var(--radius-md); overflow: hidden;">
+            <div id="previewMap" style="height: 100%;"></div>
+          </div>
+        </div>
+        <p class="form-input-hint">Map auto-centers when a valid ICAO code is entered</p>
+      </div>
+
+      <div class="form-actions">
+        <a href="index.html" class="form-cancel-btn">Cancel</a>
+        <button class="form-submit-btn" id="submitBtn" disabled>
+          Create Airport
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M5 10h10m-4-4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast + Settings injected by settings.js -->
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="airlines-db.js"></script>
+  <script src="github-api.js"></script>
+  <script src="settings.js"></script>
+  <script src="add-airport.js"></script>
+</body>
+</html>
