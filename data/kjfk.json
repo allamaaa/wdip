@@ -96,21 +96,6 @@
       ]
     },
     {
-      "id": "T100",
-      "name": "Cargo Area E",
-      "gates": "N/A",
-      "bounds": [
-        [
-          40.65450368260518,
-          -73.78048896789552
-        ],
-        [
-          40.65961060677238,
-          -73.77206009484671
-        ]
-      ]
-    },
-    {
       "id": "T101",
       "name": "Cargo Area B",
       "gates": "N/A",
@@ -142,16 +127,16 @@
     },
     {
       "id": "T100",
-      "name": "New Terminal",
-      "gates": "TBD",
+      "name": "Cargo Area D",
+      "gates": "N/A",
       "bounds": [
         [
-          40.65874082790671,
-          -73.78552301025393
+          40.65762470297605,
+          -73.78758121679881
         ],
         [
-          40.66074082790671,
-          -73.78352301025392
+          40.66223755236764,
+          -73.78151893615724
         ]
       ]
     }
@@ -225,11 +210,6 @@
     "AVA": {
       "name": "Avianca",
       "icao": "AVA",
-      "terminal": "T4"
-    },
-    "CAL": {
-      "name": "China Airlines",
-      "icao": "CAL",
       "terminal": "T4"
     },
     "CES": {
@@ -402,9 +382,14 @@
       "icao": "ASA",
       "terminal": "T5"
     },
-    "DHK": {
-      "name": "DHL Air UK",
-      "icao": "DHK",
+    "FDX": {
+      "name": "FedEx Express",
+      "icao": "FDX",
+      "terminal": "T100"
+    },
+    "CAL_C": {
+      "name": "China Airlines Cargo",
+      "icao": "CAL",
       "terminal": "T100"
     }
   },
