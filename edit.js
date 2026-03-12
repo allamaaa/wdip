@@ -13,7 +13,6 @@ let satelliteTileLayer = null;
 let termRects = {};
 let fboRects = {};
 let dragHandles = {};
-let rotateHandles = {};
 let deleteButtons = {};
 let selectedRectId = null;
 let hasUnsavedChanges = false;
@@ -156,113 +155,6 @@ function polygonCenter(corners) {
   return [lat / corners.length, lng / corners.length];
 }
 
-// Rotate point around center by angle (radians)
-function rotatePoint(point, center, angle) {
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-  const dx = point[1] - center[1];
-  const dy = point[0] - center[0];
-  return [
-    center[0] + dy * cos - dx * sin,
-    center[1] + dx * cos + dy * sin,
-  ];
-}
-
-function createRotateHandle(rect, type, id) {
-  // Position at the NE corner
-  const corners = rect.getLatLngs()[0];
-  const ne = corners[2]; // NE corner
-  const center = rect.getBounds().getCenter();
-
-  // Offset slightly outward from NE corner
-  const offsetLat = (ne.lat - center.lat) * 0.3;
-  const offsetLng = (ne.lng - center.lng) * 0.3;
-  const handlePos = L.latLng(ne.lat + offsetLat, ne.lng + offsetLng);
-
-  const icon = L.divIcon({
-    className: "rotate-handle-icon",
-    html: '<svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>',
-    iconSize: [22, 22],
-    iconAnchor: [11, 11],
-  });
-
-  const marker = L.marker(handlePos, {
-    icon,
-    draggable: true,
-    zIndexOffset: 1050,
-  });
-  marker.addTo(editMap);
-
-  let startAngle = null;
-  let originalCorners = null;
-
-  marker.on("dragstart", () => {
-    editMap.dragging.disable();
-    const center = rect.getBounds().getCenter();
-    const markerPos = marker.getLatLng();
-    startAngle = Math.atan2(markerPos.lng - center.lng, markerPos.lat - center.lat);
-    originalCorners = rect.getLatLngs()[0].map(ll => [ll.lat, ll.lng]);
-  });
-
-  marker.on("drag", (e) => {
-    const center = rect.getBounds().getCenter();
-    const markerPos = e.target.getLatLng();
-    const currentAngle = Math.atan2(markerPos.lng - center.lng, markerPos.lat - center.lat);
-    const angleDiff = currentAngle - startAngle;
-
-    const centerArr = [center.lat, center.lng];
-    const newCorners = originalCorners.map(c => rotatePoint(c, centerArr, angleDiff));
-
-    rect.setLatLngs(newCorners);
-    rect.disableEdit();
-  });
-
-  marker.on("dragend", () => {
-    editMap.dragging.enable();
-    rect.enableEdit();
-
-    // Update data
-    const latLngs = rect.getLatLngs()[0];
-    const corners = latLngs.map(ll => [ll.lat, ll.lng]);
-
-    if (type === "term") {
-      const term = airportData.terminals.find(t => t.id === id);
-      if (term) {
-        term.corners = corners;
-        delete term.bounds;
-        markChanged();
-      }
-    } else {
-      const fbo = airportData.fbos.find(f => f.id === id);
-      if (fbo) {
-        fbo.corners = corners;
-        delete fbo.bounds;
-        markChanged();
-      }
-    }
-
-    // Sync all handles
-    if (dragHandles[`${type}_${id}`]) {
-      dragHandles[`${type}_${id}`].setLatLng(rect.getBounds().getCenter());
-    }
-    syncRotateHandle(rect, type, id);
-  });
-
-  return marker;
-}
-
-function syncRotateHandle(rect, type, id) {
-  const key = `${type}_${id}`;
-  if (!rotateHandles[key]) return;
-
-  const corners = rect.getLatLngs()[0];
-  const ne = corners[2];
-  const center = rect.getBounds().getCenter();
-  const offsetLat = (ne.lat - center.lat) * 0.3;
-  const offsetLng = (ne.lng - center.lng) * 0.3;
-  rotateHandles[key].setLatLng(L.latLng(ne.lat + offsetLat, ne.lng + offsetLng));
-}
-
 function createDragHandle(rect, type, id) {
   const center = rect.getBounds().getCenter();
   const icon = L.divIcon({
@@ -313,7 +205,7 @@ function createDragHandle(rect, type, id) {
     }
     // Sync handle positions
     marker.setLatLng(rect.getBounds().getCenter());
-    syncRotateHandle(rect, type, id);
+
   });
 
   return marker;
@@ -370,7 +262,6 @@ function createDeleteButton(rect, type, id) {
 function drawTerminalRects() {
   termRects = {};
   dragHandles = {};
-  rotateHandles = {};
   airportData.terminals.forEach((term) => {
     const isReno = !!term.renovation;
     const color = isReno ? "#fbbf24" : "#00d4ff";
@@ -401,7 +292,7 @@ function drawTerminalRects() {
       if (dragHandles[`term_${term.id}`]) {
         dragHandles[`term_${term.id}`].setLatLng(rect.getBounds().getCenter());
       }
-      syncRotateHandle(rect, "term", term.id);
+
     });
 
     rect.on("click", () => selectRect("term", term.id));
@@ -432,7 +323,7 @@ function drawFBORects() {
     rect.addTo(editMap);
     rect.enableEdit();
 
-    rect.bindTooltip(`<strong>${fbo.name}</strong><span class="tooltip-gates">FBO</span>`, {
+    rect.bindTooltip(`<strong>${fbo.name}</strong><span class="tooltip-gates">${fbo.description || 'FBO'}</span>`, {
       className: "terminal-tooltip fbo-tooltip",
       direction: "top",
       offset: [0, -5],
@@ -443,7 +334,7 @@ function drawFBORects() {
       if (dragHandles[`fbo_${fbo.id}`]) {
         dragHandles[`fbo_${fbo.id}`].setLatLng(rect.getBounds().getCenter());
       }
-      syncRotateHandle(rect, "fbo", fbo.id);
+
     });
 
     rect.on("click", () => selectRect("fbo", fbo.id));
@@ -676,20 +567,26 @@ function bindTerminalCardEvents() {
       // Append to body with fixed positioning
       document.body.appendChild(popup);
 
-      // Position relative to the tag
+      // Position relative to the tag — place above by default
       const tagRect = tag.getBoundingClientRect();
-      popup.style.left = tagRect.left + tagRect.width / 2 + "px";
-      popup.style.top = tagRect.top - 8 + "px";
-
-      // Clamp so popup doesn't go off-screen
+      // First render to get popup dimensions, then clamp
+      popup.style.visibility = "hidden";
       requestAnimationFrame(() => {
         const pr = popup.getBoundingClientRect();
-        if (pr.left < 8) popup.style.left = "8px";
-        if (pr.right > window.innerWidth - 8) popup.style.left = (window.innerWidth - pr.width - 8) + "px";
-        if (pr.top < 8) {
+        // Horizontal: center on tag, but clamp to viewport
+        let left = tagRect.left + tagRect.width / 2 - pr.width / 2;
+        if (left < 8) left = 8;
+        if (left + pr.width > window.innerWidth - 8) left = window.innerWidth - pr.width - 8;
+        popup.style.left = left + "px";
+        popup.style.transform = "none";
+
+        // Vertical: prefer above, flip below if no room
+        if (tagRect.top - pr.height - 8 < 8) {
           popup.style.top = (tagRect.bottom + 8) + "px";
-          popup.style.transform = "translateX(-50%)";
+        } else {
+          popup.style.top = (tagRect.top - pr.height - 8) + "px";
         }
+        popup.style.visibility = "";
       });
 
       const allCb = popup.querySelector(".gate-picker-all-cb");
@@ -704,13 +601,13 @@ function bindTerminalCardEvents() {
       saveBtn.addEventListener("click", (ev) => {
         ev.stopPropagation();
         if (allCb.checked) {
-          airline.gates = termGates;
+          delete airline.gates;
         } else {
           const val = gateInput.value.trim();
           if (val) {
             airline.gates = val;
           } else {
-            airline.gates = termGates;
+            delete airline.gates;
           }
         }
         markChanged();
@@ -760,6 +657,21 @@ function bindTerminalCardEvents() {
         </div>
       `).join("");
       dropdown.classList.add("active");
+
+      // Position dropdown using fixed positioning to avoid clipping
+      const inputRect = input.getBoundingClientRect();
+      dropdown.style.position = "fixed";
+      dropdown.style.left = inputRect.left + "px";
+      dropdown.style.width = inputRect.width + "px";
+      // Show above if near bottom of viewport
+      const spaceBelow = window.innerHeight - inputRect.bottom;
+      if (spaceBelow < 230) {
+        dropdown.style.top = "auto";
+        dropdown.style.bottom = (window.innerHeight - inputRect.top + 2) + "px";
+      } else {
+        dropdown.style.top = inputRect.bottom + 2 + "px";
+        dropdown.style.bottom = "auto";
+      }
 
       dropdown.querySelectorAll(".editor-airline-dd-item").forEach((item) => {
         item.addEventListener("click", () => {
@@ -817,10 +729,6 @@ function bindTerminalCardEvents() {
         editMap.removeLayer(dragHandles[`term_${termId}`]);
         delete dragHandles[`term_${termId}`];
       }
-      if (rotateHandles[`term_${termId}`]) {
-        editMap.removeLayer(rotateHandles[`term_${termId}`]);
-        delete rotateHandles[`term_${termId}`];
-      }
 
       markChanged();
       renderTerminalCards();
@@ -855,6 +763,10 @@ function renderFBOCards() {
           <input class="editor-card-name-input fbo-name-input" value="${escapeHtml(fbo.name)}" data-field="name" data-fbo-id="${fbo.id}" spellcheck="false">
           <button class="editor-card-delete fbo-delete" data-fbo-id="${fbo.id}" title="Delete FBO">&times;</button>
         </div>
+        <div class="editor-card-field">
+          <label>Description</label>
+          <input class="editor-card-input fbo-desc-input" value="${escapeHtml(fbo.description || '')}" data-field="description" data-fbo-id="${fbo.id}" placeholder="e.g. Private jet terminal" spellcheck="false">
+        </div>
       </div>
     `)
     .join("");
@@ -871,9 +783,9 @@ function bindFBOCardEvents() {
       if (fbo) {
         fbo[field] = input.value;
         markChanged();
-        if (field === "name" && fboRects[fboId]) {
+        if ((field === "name" || field === "description") && fboRects[fboId]) {
           fboRects[fboId].unbindTooltip();
-          fboRects[fboId].bindTooltip(`<strong>${fbo.name}</strong><span class="tooltip-gates">FBO</span>`, {
+          fboRects[fboId].bindTooltip(`<strong>${fbo.name}</strong><span class="tooltip-gates">${fbo.description || 'FBO'}</span>`, {
             className: "terminal-tooltip fbo-tooltip",
             direction: "top",
             offset: [0, -5],
@@ -897,10 +809,6 @@ function bindFBOCardEvents() {
       if (dragHandles[`fbo_${fboId}`]) {
         editMap.removeLayer(dragHandles[`fbo_${fboId}`]);
         delete dragHandles[`fbo_${fboId}`];
-      }
-      if (rotateHandles[`fbo_${fboId}`]) {
-        editMap.removeLayer(rotateHandles[`fbo_${fboId}`]);
-        delete rotateHandles[`fbo_${fboId}`];
       }
 
       markChanged();
@@ -959,7 +867,7 @@ function addTerminal() {
     if (dragHandles[`term_${id}`]) {
       dragHandles[`term_${id}`].setLatLng(rect.getBounds().getCenter());
     }
-    syncRotateHandle(rect, "term", id);
+
   });
   rect.on("click", () => selectRect("term", id));
 
@@ -1012,7 +920,7 @@ function addFBO() {
     if (dragHandles[`fbo_${id}`]) {
       dragHandles[`fbo_${id}`].setLatLng(rect.getBounds().getCenter());
     }
-    syncRotateHandle(rect, "fbo", id);
+
   });
   rect.on("click", () => selectRect("fbo", id));
 
@@ -1140,7 +1048,6 @@ function handleImportFile(event) {
       Object.values(termRects).forEach(r => editMap.removeLayer(r));
       Object.values(fboRects).forEach(r => editMap.removeLayer(r));
       Object.values(dragHandles).forEach(m => editMap.removeLayer(m));
-      Object.values(rotateHandles).forEach(m => editMap.removeLayer(m));
 
       airportData = imported;
       icao = imported.icao;

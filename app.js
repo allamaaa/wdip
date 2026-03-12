@@ -514,7 +514,7 @@ function renderAirportMap() {
       const rect = L.polygon(fboShape, RECT_STYLE_FBO);
       rect.addTo(leafletMap);
 
-      rect.bindTooltip(`<strong>${fbo.name}</strong><span class="tooltip-gates">FBO — General Aviation</span>`, {
+      rect.bindTooltip(`<strong>${fbo.name}</strong><span class="tooltip-gates">${fbo.description || 'FBO \u2014 General Aviation'}</span>`, {
         className: "terminal-tooltip fbo-tooltip",
         direction: "top",
         offset: [0, -5],
@@ -915,6 +915,7 @@ function renderFBOs() {
       (fbo) => `
     <div class="fbo-item" data-fbo-id="${fbo.id || ""}">
       <div class="fbo-name">${fbo.name}</div>
+      ${fbo.description ? `<div class="fbo-description">${fbo.description}</div>` : ""}
       ${fbo.location ? `<div class="fbo-location">${fbo.location}</div>` : ""}
       ${fbo.phone ? `<div class="fbo-phone">${fbo.phone}</div>` : ""}
     </div>`
