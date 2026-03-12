@@ -42,6 +42,17 @@
       "terminalCount": 3,
       "airlineCount": 5,
       "fboCount": 5
+    },
+    "KABE": {
+      "icao": "KABE",
+      "iata": "ABE",
+      "name": "Lehigh Valley International Aiport",
+      "city": "Allentown, PA",
+      "status": "active",
+      "file": "data/kabe.json",
+      "terminalCount": 0,
+      "airlineCount": 0,
+      "fboCount": 0
     }
   }
 }
