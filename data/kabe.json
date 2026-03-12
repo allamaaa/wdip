@@ -117,7 +117,7 @@
   "fbos": [
     {
       "id": "FBO100",
-      "name": "Lehigh Valley Aviation Services - FBO",
+      "name": "Lehigh Valley Aviation Services",
       "corners": [
         [
           40.648984519539276,
@@ -151,11 +151,12 @@
           40.64953804575467,
           -75.44136106967927
         ]
-      ]
+      ],
+      "description": "FBO"
     },
     {
       "id": "FBO101",
-      "name": "East Coast Jets - Private Charter Company",
+      "name": "East Coast Jets",
       "corners": [
         [
           40.648736245259954,
@@ -173,11 +174,12 @@
           40.64952990569655,
           -75.44349610805511
         ]
-      ]
+      ],
+      "description": "Private Charter Company"
     },
     {
       "id": "FBO102",
-      "name": "New World Aviation - Maintenance",
+      "name": "New World Aviation",
       "corners": [
         [
           40.64801176749256,
@@ -211,7 +213,8 @@
           40.647848962417584,
           -75.43894171714784
         ]
-      ]
+      ],
+      "description": "Aircraft Maintenance Ramp"
     },
     {
       "id": "FBO103",
