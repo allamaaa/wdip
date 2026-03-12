@@ -1,0 +1,20 @@
+{
+  "icao": "KTEB",
+  "iata": "TEB",
+  "name": "Tebeboro Airport",
+  "city": "Teteboro, NJ",
+  "elevation": "",
+  "status": "active",
+  "runways": [],
+  "map": {
+    "center": [
+      40.85182042288324,
+      -74.06055450439455
+    ],
+    "zoom": 15
+  },
+  "terminals": [],
+  "airlines": {},
+  "quickAirlines": [],
+  "fbos": []
+}
