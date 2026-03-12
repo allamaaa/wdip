@@ -23,6 +23,7 @@ const AIRLINES_DB = {
   RPA_D: { name: "Republic Airways (Delta Connection)", icao: "RPA", callsign: "BRICKYARD" },
   ENY: { name: "Envoy Air (American Eagle)", icao: "ENY", callsign: "ENVOY" },
   PDT: { name: "Piedmont Airlines (American Eagle)", icao: "PDT", callsign: "PIEDMONT" },
+  PSA: { name: "PSA Airlines (American Eagle)", icao: "PSA", callsign: "BLUE STREAK" },
   ACA: { name: "Air Canada", icao: "ACA", callsign: "AIR CANADA" },
   WJA: { name: "WestJet", icao: "WJA", callsign: "WESTJET" },
   TSC: { name: "Air Transat", icao: "TSC", callsign: "AIR TRANSAT" },
@@ -144,7 +145,7 @@ const AIRLINES_DB = {
   EDV: { name: "Endeavor Air (Delta Connection)", icao: "EDV", callsign: "ENDEAVOR" },
   EJA: { name: "NetJets", icao: "EJA", callsign: "EXECJET" },
   LXJ: { name: "FlexJet", icao: "LXJ", callsign: "FLEXJET" },
-  PIA: { name: "PSA Airlines (American Eagle)", icao: "PSA", callsign: "BLUE STREAK" }
+  GJS: { name: "GoJet Airlines (United Express)", icao: "GHS", callsign: "LINDBERGH" }
 };
 
 /**
