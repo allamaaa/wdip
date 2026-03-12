@@ -50,9 +50,9 @@
       "city": "Allentown, PA",
       "status": "active",
       "file": "data/kabe.json",
-      "terminalCount": 0,
-      "airlineCount": 0,
-      "fboCount": 0
+      "terminalCount": 2,
+      "airlineCount": 5,
+      "fboCount": 4
     }
   }
 }
