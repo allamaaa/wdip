@@ -39,9 +39,9 @@
       "city": "White Plains, NY",
       "status": "active",
       "file": "data/khpn.json",
-      "terminalCount": 0,
-      "airlineCount": 0,
-      "fboCount": 0
+      "terminalCount": 3,
+      "airlineCount": 5,
+      "fboCount": 5
     }
   }
 }
