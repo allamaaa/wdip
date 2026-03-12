@@ -1743,7 +1743,7 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .editor-section-header {
@@ -1953,6 +1953,87 @@ body {
   color: var(--red);
 }
 
+.editor-airline-tag {
+  cursor: pointer;
+}
+
+.gate-picker-popup {
+  position: fixed;
+  transform: translate(-50%, -100%);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 200px;
+  z-index: 9999;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  cursor: default;
+}
+
+.gate-picker-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.gate-picker-all-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.gate-picker-all-cb {
+  accent-color: var(--cyan);
+}
+
+.gate-picker-input {
+  width: 100%;
+  padding: 6px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  margin-bottom: 6px;
+  box-sizing: border-box;
+}
+
+.gate-picker-input:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.gate-picker-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.gate-picker-save {
+  width: 100%;
+  padding: 5px 0;
+  background: var(--cyan);
+  color: var(--bg-dark);
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.gate-picker-save:hover {
+  opacity: 0.85;
+}
+
 .editor-add-airline {
   margin-top: 4px;
 }
@@ -2092,7 +2173,7 @@ body {
   border-radius: var(--radius-sm);
   max-height: 220px;
   overflow-y: auto;
-  z-index: 200;
+  z-index: 9998;
   display: none;
   box-shadow: var(--shadow-md);
 }
@@ -2676,7 +2757,7 @@ body {
 
 .airline-list-item {
   display: grid;
-  grid-template-columns: 80px 1fr 120px 80px 36px;
+  grid-template-columns: 80px 1fr 120px 80px auto;
   gap: 12px;
   align-items: center;
   padding: 10px 16px;
@@ -2726,6 +2807,89 @@ body {
   color: var(--accent);
   border-color: var(--accent);
   background: var(--accent-glow);
+}
+
+.airline-list-actions {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.airline-delete-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.airline-delete-btn:hover {
+  color: var(--red);
+  border-color: var(--red);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.delete-confirm-popup {
+  position: fixed;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  z-index: 9999;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  min-width: 220px;
+}
+
+.delete-confirm-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.delete-confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.delete-confirm-yes {
+  flex: 1;
+  padding: 6px 0;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.delete-confirm-yes:hover {
+  opacity: 0.85;
+}
+
+.delete-confirm-no {
+  flex: 1;
+  padding: 6px 0;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.delete-confirm-no:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
 }
 
 .airline-pagination {

@@ -408,12 +408,9 @@ function drawTerminalRects() {
 
     termRects[term.id] = rect;
 
-    // Create drag handle and rotate handle
+    // Create drag handle
     const handle = createDragHandle(rect, "term", term.id);
     dragHandles[`term_${term.id}`] = handle;
-
-    const rotHandle = createRotateHandle(rect, "term", term.id);
-    rotateHandles[`term_${term.id}`] = rotHandle;
   });
 }
 
@@ -455,9 +452,6 @@ function drawFBORects() {
 
     const handle = createDragHandle(rect, "fbo", fbo.id);
     dragHandles[`fbo_${fbo.id}`] = handle;
-
-    const rotHandle = createRotateHandle(rect, "fbo", fbo.id);
-    rotateHandles[`fbo_${fbo.id}`] = rotHandle;
   });
 }
 
@@ -644,6 +638,95 @@ function bindTerminalCardEvents() {
         markChanged();
         renderTerminalCards();
       }
+    });
+  });
+
+  // Gate picker on airline tag click
+  document.querySelectorAll(".editor-airline-tag").forEach((tag) => {
+    tag.addEventListener("click", (e) => {
+      if (e.target.closest(".editor-airline-remove")) return;
+      e.stopPropagation();
+      const key = tag.dataset.key;
+      const termId = tag.dataset.termId;
+      const airline = airportData.airlines[key];
+      if (!airline) return;
+      const term = airportData.terminals.find((t) => t.id === termId);
+      const termGates = term ? term.gates : "";
+
+      // Remove any existing popup
+      document.querySelectorAll(".gate-picker-popup").forEach((p) => p.remove());
+
+      const hasSpecificGates = !!airline.gates;
+      const popup = document.createElement("div");
+      popup.className = "gate-picker-popup";
+      popup.innerHTML = `
+        <div class="gate-picker-title">${airline.icao} \u2014 Gates</div>
+        <label class="gate-picker-all-label">
+          <input type="checkbox" class="gate-picker-all-cb" ${!hasSpecificGates ? "checked" : ""}>
+          All gates
+        </label>
+        <input type="text" class="gate-picker-input" placeholder="e.g. 1-4, 7, 9" value="${hasSpecificGates ? airline.gates : ""}" ${!hasSpecificGates ? "disabled" : ""} spellcheck="false">
+        <div class="gate-picker-hint">Terminal gates: ${termGates || "N/A"}</div>
+        <button class="gate-picker-save">Save</button>
+      `;
+
+      // Prevent clicks inside popup from bubbling to tag or document
+      popup.addEventListener("click", (ev) => ev.stopPropagation());
+
+      // Append to body with fixed positioning
+      document.body.appendChild(popup);
+
+      // Position relative to the tag
+      const tagRect = tag.getBoundingClientRect();
+      popup.style.left = tagRect.left + tagRect.width / 2 + "px";
+      popup.style.top = tagRect.top - 8 + "px";
+
+      // Clamp so popup doesn't go off-screen
+      requestAnimationFrame(() => {
+        const pr = popup.getBoundingClientRect();
+        if (pr.left < 8) popup.style.left = "8px";
+        if (pr.right > window.innerWidth - 8) popup.style.left = (window.innerWidth - pr.width - 8) + "px";
+        if (pr.top < 8) {
+          popup.style.top = (tagRect.bottom + 8) + "px";
+          popup.style.transform = "translateX(-50%)";
+        }
+      });
+
+      const allCb = popup.querySelector(".gate-picker-all-cb");
+      const gateInput = popup.querySelector(".gate-picker-input");
+      const saveBtn = popup.querySelector(".gate-picker-save");
+
+      allCb.addEventListener("change", () => {
+        gateInput.disabled = allCb.checked;
+        if (allCb.checked) gateInput.value = "";
+      });
+
+      saveBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        if (allCb.checked) {
+          airline.gates = termGates;
+        } else {
+          const val = gateInput.value.trim();
+          if (val) {
+            airline.gates = val;
+          } else {
+            airline.gates = termGates;
+          }
+        }
+        markChanged();
+        popup.remove();
+      });
+
+      // Close on outside click
+      setTimeout(() => {
+        const closeHandler = (ev) => {
+          if (!popup.contains(ev.target) && !tag.contains(ev.target)) {
+            popup.remove();
+            document.removeEventListener("click", closeHandler);
+          }
+        };
+        document.addEventListener("click", closeHandler);
+      }, 0);
     });
   });
 
@@ -885,9 +968,6 @@ function addTerminal() {
   const handle = createDragHandle(rect, "term", id);
   dragHandles[`term_${id}`] = handle;
 
-  const rotHandle = createRotateHandle(rect, "term", id);
-  rotateHandles[`term_${id}`] = rotHandle;
-
   markChanged();
   renderTerminalCards();
   selectRect("term", id);
@@ -940,9 +1020,6 @@ function addFBO() {
 
   const handle = createDragHandle(rect, "fbo", id);
   dragHandles[`fbo_${id}`] = handle;
-
-  const rotHandle = createRotateHandle(rect, "fbo", id);
-  rotateHandles[`fbo_${id}`] = rotHandle;
 
   markChanged();
   renderFBOCards();

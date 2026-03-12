@@ -97,9 +97,14 @@ function renderList() {
         <span>${escapeHtml(db.name)}</span>
         <span style="color: var(--text-muted);">${escapeHtml(db.callsign || "\u2014")}</span>
         <span>${db.cargo ? '<span class="cargo-label">CARGO</span>' : ''}</span>
-        <button class="airline-edit-btn" data-key="${escapeHtml(key)}" title="Edit airline">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M14.85 2.85a1.5 1.5 0 012.1 0l.2.2a1.5 1.5 0 010 2.1L7.5 14.8l-3.3.7.7-3.3 9.95-9.32z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <div class="airline-list-actions">
+          <button class="airline-edit-btn" data-key="${escapeHtml(key)}" title="Edit airline">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M14.85 2.85a1.5 1.5 0 012.1 0l.2.2a1.5 1.5 0 010 2.1L7.5 14.8l-3.3.7.7-3.3 9.95-9.32z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="airline-delete-btn" data-key="${escapeHtml(key)}" title="Delete airline">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
       </div>`;
   }).join("");
 
@@ -108,6 +113,14 @@ function renderList() {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       openEditForm(btn.dataset.key);
+    });
+  });
+
+  // Bind delete buttons
+  container.querySelectorAll(".airline-delete-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      confirmDeleteAirline(btn.dataset.key);
     });
   });
 }
@@ -276,7 +289,6 @@ function openEditForm(key) {
 
   // Populate fields
   document.getElementById("newKey").value = key.replace(/_C$/, "");
-  document.getElementById("newKey").disabled = true; // Can't change key
   document.getElementById("newName").value = db.name;
   document.getElementById("newIcao").value = db.icao;
   document.getElementById("newCallsign").value = db.callsign || "";
@@ -305,8 +317,12 @@ async function saveEditAirline() {
     return;
   }
 
-  // Determine new key based on cargo status
-  const baseKey = oldKey.replace(/_C$/, "");
+  // Determine new key from user input + cargo suffix
+  let baseKey = document.getElementById("newKey").value.trim().toUpperCase();
+  if (!baseKey) {
+    showToast("Database Code is required", true);
+    return;
+  }
   const newKey = isCargo ? (baseKey.endsWith("_C") ? baseKey : baseKey + "_C") : baseKey;
 
   // Check if new key conflicts with existing (when key changes)
@@ -372,7 +388,6 @@ function closeEditForm() {
   formTitle.textContent = "New Airline";
 
   // Re-enable fields
-  document.getElementById("newKey").disabled = false;
   document.getElementById("newCargo").disabled = false;
 
   // Reset save button
@@ -382,6 +397,103 @@ function closeEditForm() {
   saveBtn.addEventListener("click", saveNewAirline);
 
   clearAddForm();
+}
+
+// ==========================================
+// DELETE AIRLINE
+// ==========================================
+
+function confirmDeleteAirline(key) {
+  const db = AIRLINES_DB[key];
+  if (!db) return;
+
+  // Remove any existing confirm popup
+  document.querySelectorAll(".delete-confirm-popup").forEach((p) => p.remove());
+
+  const btn = document.querySelector(`.airline-delete-btn[data-key="${key}"]`);
+  if (!btn) return;
+
+  const popup = document.createElement("div");
+  popup.className = "delete-confirm-popup";
+  popup.innerHTML = `
+    <div class="delete-confirm-text">Delete <strong>${escapeHtml(db.name)}</strong> (${escapeHtml(key)})?</div>
+    <div class="delete-confirm-actions">
+      <button class="delete-confirm-yes">Delete</button>
+      <button class="delete-confirm-no">Cancel</button>
+    </div>
+  `;
+
+  popup.addEventListener("click", (ev) => ev.stopPropagation());
+  document.body.appendChild(popup);
+
+  // Position near the delete button
+  const btnRect = btn.getBoundingClientRect();
+  popup.style.left = btnRect.left + "px";
+  popup.style.top = (btnRect.bottom + 6) + "px";
+
+  // Clamp to viewport
+  requestAnimationFrame(() => {
+    const pr = popup.getBoundingClientRect();
+    if (pr.right > window.innerWidth - 8) popup.style.left = (window.innerWidth - pr.width - 8) + "px";
+    if (pr.bottom > window.innerHeight - 8) popup.style.top = (btnRect.top - pr.height - 6) + "px";
+  });
+
+  popup.querySelector(".delete-confirm-yes").addEventListener("click", () => {
+    popup.remove();
+    deleteAirline(key);
+  });
+
+  popup.querySelector(".delete-confirm-no").addEventListener("click", () => {
+    popup.remove();
+  });
+
+  // Close on outside click
+  setTimeout(() => {
+    const closeHandler = (ev) => {
+      if (!popup.contains(ev.target)) {
+        popup.remove();
+        document.removeEventListener("click", closeHandler);
+      }
+    };
+    document.addEventListener("click", closeHandler);
+  }, 0);
+}
+
+async function deleteAirline(key) {
+  const db = AIRLINES_DB[key];
+  if (!db) return;
+
+  const token = localStorage.getItem("wdip_gh_token");
+  if (!token) {
+    showSettingsPanel();
+    showToast("GitHub token required to delete airlines", true);
+    return;
+  }
+
+  const name = db.name;
+
+  // Remove from in-memory DB
+  delete AIRLINES_DB[key];
+
+  try {
+    const fileContent = buildAirlinesDbFile();
+    await saveFileToGitHub(token, "airlines-db.js", fileContent, `Delete airline: ${name} (${key})`);
+
+    showToast(`Deleted ${name} (${key}). Changes may take a few minutes to appear.`);
+
+    // Refresh list
+    allAirlineKeys = Object.keys(AIRLINES_DB).sort((a, b) => AIRLINES_DB[a].name.localeCompare(AIRLINES_DB[b].name));
+    filteredKeys = [...allAirlineKeys];
+    renderList();
+    renderPagination();
+    document.getElementById("airlineCount").textContent = `${allAirlineKeys.length} airlines`;
+
+  } catch (e) {
+    // Rollback
+    AIRLINES_DB[key] = db;
+    console.error("Delete failed", e);
+    showToast(`Delete failed: ${e.message}`, true);
+  }
 }
 
 // Store the searchAirlines function text as a constant for file reconstruction

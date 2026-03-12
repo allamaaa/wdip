@@ -757,7 +757,7 @@ function showAirlineInfo(key, airline, dbEntry) {
       </div>
       <div class="info-grid-item">
         <div class="info-grid-label">Gates</div>
-        <div class="info-grid-value mono">${term ? term.gates : "—"}</div>
+        <div class="info-grid-value mono">${airline.gates ? airline.gates : (term ? term.gates : "—")}</div>
       </div>
       <div class="info-grid-item">
         <div class="info-grid-label">Airport</div>
