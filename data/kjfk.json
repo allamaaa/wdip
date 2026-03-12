@@ -183,7 +183,7 @@
     {
       "id": "T7",
       "name": "Terminal 7",
-      "gates": "Under Renovation",
+      "gates": "1-9",
       "renovation": false,
       "corners": [
         [
@@ -498,7 +498,7 @@
     "CES": {
       "name": "China Eastern",
       "icao": "CES",
-      "terminal": "T4"
+      "terminal": "T1"
     },
     "CSN": {
       "name": "China Southern",
@@ -548,7 +548,7 @@
     "SVA": {
       "name": "Saudia",
       "icao": "SVA",
-      "terminal": "T4"
+      "terminal": "T1"
     },
     "ARG": {
       "name": "Aerolineas Argentinas",
@@ -603,12 +603,12 @@
     "QTR": {
       "name": "Qatar Airways",
       "icao": "QTR",
-      "terminal": "T7"
+      "terminal": "T8"
     },
     "RAM": {
       "name": "Royal Air Maroc",
       "icao": "RAM",
-      "terminal": "T8"
+      "terminal": "T1"
     },
     "RJA": {
       "name": "Royal Jordanian",
@@ -624,11 +624,6 @@
       "name": "LOT Polish Airlines",
       "icao": "LOT",
       "terminal": "T7"
-    },
-    "TAM": {
-      "name": "LATAM Airlines",
-      "icao": "TAM",
-      "terminal": "T4"
     },
     "EIN": {
       "name": "Aer Lingus",
@@ -719,6 +714,91 @@
       "name": "Japan Airlines",
       "icao": "JAL",
       "terminal": "T8"
+    },
+    "EDV": {
+      "name": "Endeavor Air (Delta Connection)",
+      "icao": "EDV",
+      "terminal": "T4"
+    },
+    "CCA": {
+      "name": "Air China",
+      "icao": "CCA",
+      "terminal": "T1"
+    },
+    "BEL": {
+      "name": "Brussels Airlines",
+      "icao": "BEL",
+      "terminal": "T1"
+    },
+    "PAL": {
+      "name": "Philippine Airlines",
+      "icao": "PAL",
+      "terminal": "T1"
+    },
+    "EVA_C": {
+      "name": "EVA Air Cargo",
+      "icao": "EVA",
+      "terminal": "T102"
+    },
+    "EVA": {
+      "name": "EVA Air",
+      "icao": "EVA",
+      "terminal": "T1"
+    },
+    "VIV": {
+      "name": "Viva Aerobus",
+      "icao": "VIV",
+      "terminal": "T1"
+    },
+    "AAR": {
+      "name": "Asiana Airlines",
+      "icao": "AAR",
+      "terminal": "T4"
+    },
+    "CAL": {
+      "name": "China Airlines",
+      "icao": "CAL",
+      "terminal": "T4"
+    },
+    "CMP": {
+      "name": "Copa Airlines",
+      "icao": "CMP",
+      "terminal": "T4"
+    },
+    "MSR": {
+      "name": "EgyptAir",
+      "icao": "MSR",
+      "terminal": "T4"
+    },
+    "SAA": {
+      "name": "South African Airways",
+      "icao": "SAA",
+      "terminal": "T4"
+    },
+    "KAC": {
+      "name": "Kuwait Airways",
+      "icao": "KAC",
+      "terminal": "T4"
+    },
+    "SWR": {
+      "name": "Swiss International Air Lines",
+      "icao": "SWR",
+      "terminal": "T4"
+    },
+    "VOI": {
+      "name": "Volaris",
+      "icao": "VOI",
+      "terminal": "T4"
+    },
+    "WJA": {
+      "name": "WestJet",
+      "icao": "WJA",
+      "terminal": "T4"
+    },
+    "TAM": {
+      "name": "LATAM Airlines",
+      "icao": "TAM",
+      "terminal": "T4"
     }
   },
   "quickAirlines": [
