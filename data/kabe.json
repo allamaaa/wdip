@@ -1,0 +1,20 @@
+{
+  "icao": "KABE",
+  "iata": "ABE",
+  "name": "Lehigh Valley International Aiport",
+  "city": "Allentown, PA",
+  "elevation": "",
+  "status": "active",
+  "runways": [],
+  "map": {
+    "center": [
+      40.6511137,
+      -75.4422336
+    ],
+    "zoom": 15
+  },
+  "terminals": [],
+  "airlines": {},
+  "quickAirlines": [],
+  "fbos": []
+}
