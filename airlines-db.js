@@ -144,7 +144,8 @@ const AIRLINES_DB = {
   EDV: { name: "Endeavor Air (Delta Connection)", icao: "EDV", callsign: "ENDEAVOR" },
   EJA: { name: "NetJets", icao: "EJA", callsign: "EXECJET" },
   LXJ: { name: "FlexJet", icao: "LXJ", callsign: "FLEXJET" },
-  JIA: { name: "PSA Airlines (American Eagle)", icao: "JIA", callsign: "BLUE STREAK" }
+  JIA: { name: "PSA Airlines (American Eagle)", icao: "JIA", callsign: "BLUE STREAK" },
+  GJS: { name: "GoJet Airlines (United Express)", icao: "GJS", callsign: "LINDBERGH" } 
 };
 
 /**
