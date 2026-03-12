@@ -55,3 +55,19 @@ async function saveFileToGitHub(token, filePath, content, message) {
 
   return await putResp.json();
 }
+
+/**
+ * Re-fetch airlines-db.js from GitHub with cache-busting,
+ * overwriting the in-memory AIRLINES_DB variable.
+ */
+async function refreshAirlinesDB() {
+  try {
+    const resp = await fetch(DATA_BASE + "airlines-db.js?v=" + Date.now());
+    if (!resp.ok) return;
+    const text = await resp.text();
+    // Use indirect eval to execute in global scope, overwriting var AIRLINES_DB
+    (0, eval)(text);
+  } catch (e) {
+    console.warn("Could not refresh airlines DB:", e);
+  }
+}

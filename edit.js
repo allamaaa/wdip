@@ -39,6 +39,9 @@ async function init() {
     return;
   }
 
+  // Refresh airlines DB to pick up any recent changes
+  await refreshAirlinesDB();
+
   // Load airport data from GitHub (or fallback to local JSON)
   airportData = await loadAirportData(icao);
 

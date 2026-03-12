@@ -135,6 +135,9 @@ async function init() {
     return;
   }
 
+  // Refresh airlines DB to pick up any recent changes
+  await refreshAirlinesDB();
+
   initSettings();
   renderAirportCards();
   updateHeroStats();

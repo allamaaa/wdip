@@ -8,8 +8,11 @@ let allAirlineKeys = [];
 let filteredKeys = [];
 let currentPage = 1;
 
-function init() {
+async function init() {
   initSettings();
+
+  // Refresh airlines DB to pick up any recent changes
+  await refreshAirlinesDB();
 
   allAirlineKeys = Object.keys(AIRLINES_DB).sort((a, b) => {
     return AIRLINES_DB[a].name.localeCompare(AIRLINES_DB[b].name);
