@@ -13,6 +13,7 @@ let satelliteTileLayer = null;
 let termRects = {};
 let fboRects = {};
 let dragHandles = {};
+let rotateHandles = {};
 let deleteButtons = {};
 let selectedRectId = null;
 let hasUnsavedChanges = false;
@@ -136,8 +137,134 @@ function initMap() {
   drawFBORects();
 }
 
+// Convert bounds [[south, west], [north, east]] to 4 corner points
+function boundsToCorners(bounds) {
+  const sw = bounds[0];
+  const ne = bounds[1];
+  return [
+    [sw[0], sw[1]], // SW
+    [sw[0], ne[1]], // SE
+    [ne[0], ne[1]], // NE
+    [ne[0], sw[1]], // NW
+  ];
+}
+
+// Get center of a polygon defined by corner points
+function polygonCenter(corners) {
+  let lat = 0, lng = 0;
+  corners.forEach(c => { lat += c[0]; lng += c[1]; });
+  return [lat / corners.length, lng / corners.length];
+}
+
+// Rotate point around center by angle (radians)
+function rotatePoint(point, center, angle) {
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  const dx = point[1] - center[1];
+  const dy = point[0] - center[0];
+  return [
+    center[0] + dy * cos - dx * sin,
+    center[1] + dx * cos + dy * sin,
+  ];
+}
+
+function createRotateHandle(rect, type, id) {
+  // Position at the NE corner
+  const corners = rect.getLatLngs()[0];
+  const ne = corners[2]; // NE corner
+  const center = rect.getBounds().getCenter();
+
+  // Offset slightly outward from NE corner
+  const offsetLat = (ne.lat - center.lat) * 0.3;
+  const offsetLng = (ne.lng - center.lng) * 0.3;
+  const handlePos = L.latLng(ne.lat + offsetLat, ne.lng + offsetLng);
+
+  const icon = L.divIcon({
+    className: "rotate-handle-icon",
+    html: '<svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>',
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+  });
+
+  const marker = L.marker(handlePos, {
+    icon,
+    draggable: true,
+    zIndexOffset: 1050,
+  });
+  marker.addTo(editMap);
+
+  let startAngle = null;
+  let originalCorners = null;
+
+  marker.on("dragstart", () => {
+    editMap.dragging.disable();
+    const center = rect.getBounds().getCenter();
+    const markerPos = marker.getLatLng();
+    startAngle = Math.atan2(markerPos.lng - center.lng, markerPos.lat - center.lat);
+    originalCorners = rect.getLatLngs()[0].map(ll => [ll.lat, ll.lng]);
+  });
+
+  marker.on("drag", (e) => {
+    const center = rect.getBounds().getCenter();
+    const markerPos = e.target.getLatLng();
+    const currentAngle = Math.atan2(markerPos.lng - center.lng, markerPos.lat - center.lat);
+    const angleDiff = currentAngle - startAngle;
+
+    const centerArr = [center.lat, center.lng];
+    const newCorners = originalCorners.map(c => rotatePoint(c, centerArr, angleDiff));
+
+    rect.setLatLngs(newCorners);
+    rect.disableEdit();
+  });
+
+  marker.on("dragend", () => {
+    editMap.dragging.enable();
+    rect.enableEdit();
+
+    // Update data
+    const latLngs = rect.getLatLngs()[0];
+    const corners = latLngs.map(ll => [ll.lat, ll.lng]);
+
+    if (type === "term") {
+      const term = airportData.terminals.find(t => t.id === id);
+      if (term) {
+        term.corners = corners;
+        delete term.bounds;
+        markChanged();
+      }
+    } else {
+      const fbo = airportData.fbos.find(f => f.id === id);
+      if (fbo) {
+        fbo.corners = corners;
+        delete fbo.bounds;
+        markChanged();
+      }
+    }
+
+    // Sync all handles
+    if (dragHandles[`${type}_${id}`]) {
+      dragHandles[`${type}_${id}`].setLatLng(rect.getBounds().getCenter());
+    }
+    syncRotateHandle(rect, type, id);
+  });
+
+  return marker;
+}
+
+function syncRotateHandle(rect, type, id) {
+  const key = `${type}_${id}`;
+  if (!rotateHandles[key]) return;
+
+  const corners = rect.getLatLngs()[0];
+  const ne = corners[2];
+  const center = rect.getBounds().getCenter();
+  const offsetLat = (ne.lat - center.lat) * 0.3;
+  const offsetLng = (ne.lng - center.lng) * 0.3;
+  rotateHandles[key].setLatLng(L.latLng(ne.lat + offsetLat, ne.lng + offsetLng));
+}
+
 function createDragHandle(rect, type, id) {
-  const center = rect.getCenter();
+  const center = rect.getBounds().getCenter();
   const icon = L.divIcon({
     className: "drag-handle-icon",
     html: '<svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M12 2l3 3h-2v4h4v-2l3 3-3 3v-2h-4v4h2l-3 3-3-3h2v-4H7v2l-3-3 3-3v2h4V5H9l3-3z"/></svg>',
@@ -164,13 +291,10 @@ function createDragHandle(rect, type, id) {
     const dlat = newLatLng.lat - startLatLng.lat;
     const dlng = newLatLng.lng - startLatLng.lng;
 
-    const bounds = rect.getBounds();
-    const newBounds = L.latLngBounds(
-      [bounds.getSouth() + dlat, bounds.getWest() + dlng],
-      [bounds.getNorth() + dlat, bounds.getEast() + dlng]
-    );
-
-    rect.setBounds(newBounds);
+    // Move all polygon corners by the same offset
+    const latLngs = rect.getLatLngs()[0];
+    const newLatLngs = latLngs.map(ll => [ll.lat + dlat, ll.lng + dlng]);
+    rect.setLatLngs(newLatLngs);
 
     // Disable edit temporarily to avoid glitches, re-enable after
     rect.disableEdit();
@@ -181,20 +305,15 @@ function createDragHandle(rect, type, id) {
   marker.on("dragend", () => {
     editMap.dragging.enable();
     rect.enableEdit();
-    // Update data bounds
+    // Update data
     if (type === "term") {
-      updateTermBounds(id, rect);
+      updateTermCornersFromPoly(id, rect);
     } else {
-      updateFBOBounds(id, rect);
+      updateFBOCornersFromPoly(id, rect);
     }
-    // Sync handle position
-    marker.setLatLng(rect.getCenter());
-    // Sync delete button position
-    const delKey = `${type}_${id}`;
-    if (deleteButtons[delKey]) {
-      const b = rect.getBounds();
-      deleteButtons[delKey].setLatLng(L.latLng(b.getNorth(), b.getEast()));
-    }
+    // Sync handle positions
+    marker.setLatLng(rect.getBounds().getCenter());
+    syncRotateHandle(rect, type, id);
   });
 
   return marker;
@@ -251,6 +370,7 @@ function createDeleteButton(rect, type, id) {
 function drawTerminalRects() {
   termRects = {};
   dragHandles = {};
+  rotateHandles = {};
   airportData.terminals.forEach((term) => {
     const isReno = !!term.renovation;
     const color = isReno ? "#fbbf24" : "#00d4ff";
@@ -263,7 +383,9 @@ function drawTerminalRects() {
       dashArray: isReno ? "6 4" : undefined,
     };
 
-    const rect = L.rectangle(term.bounds, style);
+    // Use polygon if corners exist (rotated), otherwise rectangle from bounds
+    const corners = term.corners || boundsToCorners(term.bounds);
+    const rect = L.polygon(corners, style);
     rect.addTo(editMap);
     rect.enableEdit();
 
@@ -275,27 +397,23 @@ function drawTerminalRects() {
 
     // Listen for vertex drag (resize)
     rect.on("editable:vertex:dragend", () => {
-      updateTermBounds(term.id, rect);
-      // Sync handle + delete button positions after resize
+      updateTermCornersFromPoly(term.id, rect);
       if (dragHandles[`term_${term.id}`]) {
-        dragHandles[`term_${term.id}`].setLatLng(rect.getCenter());
+        dragHandles[`term_${term.id}`].setLatLng(rect.getBounds().getCenter());
       }
-      if (deleteButtons[`term_${term.id}`]) {
-        const b = rect.getBounds();
-        deleteButtons[`term_${term.id}`].setLatLng(L.latLng(b.getNorth(), b.getEast()));
-      }
+      syncRotateHandle(rect, "term", term.id);
     });
 
     rect.on("click", () => selectRect("term", term.id));
 
     termRects[term.id] = rect;
 
-    // Create drag handle and delete button
+    // Create drag handle and rotate handle
     const handle = createDragHandle(rect, "term", term.id);
     dragHandles[`term_${term.id}`] = handle;
 
-    const delBtn = createDeleteButton(rect, "term", term.id);
-    deleteButtons[`term_${term.id}`] = delBtn;
+    const rotHandle = createRotateHandle(rect, "term", term.id);
+    rotateHandles[`term_${term.id}`] = rotHandle;
   });
 }
 
@@ -304,9 +422,10 @@ function drawFBORects() {
   if (!airportData.fbos) return;
 
   airportData.fbos.forEach((fbo) => {
-    if (!fbo.bounds) return;
+    if (!fbo.bounds && !fbo.corners) return;
 
-    const rect = L.rectangle(fbo.bounds, {
+    const corners = fbo.corners || boundsToCorners(fbo.bounds);
+    const rect = L.polygon(corners, {
       color: "#00e87b",
       weight: 2,
       opacity: 0.5,
@@ -323,14 +442,11 @@ function drawFBORects() {
     });
 
     rect.on("editable:vertex:dragend", () => {
-      updateFBOBounds(fbo.id, rect);
+      updateFBOCornersFromPoly(fbo.id, rect);
       if (dragHandles[`fbo_${fbo.id}`]) {
-        dragHandles[`fbo_${fbo.id}`].setLatLng(rect.getCenter());
+        dragHandles[`fbo_${fbo.id}`].setLatLng(rect.getBounds().getCenter());
       }
-      if (deleteButtons[`fbo_${fbo.id}`]) {
-        const b = rect.getBounds();
-        deleteButtons[`fbo_${fbo.id}`].setLatLng(L.latLng(b.getNorth(), b.getEast()));
-      }
+      syncRotateHandle(rect, "fbo", fbo.id);
     });
 
     rect.on("click", () => selectRect("fbo", fbo.id));
@@ -340,8 +456,8 @@ function drawFBORects() {
     const handle = createDragHandle(rect, "fbo", fbo.id);
     dragHandles[`fbo_${fbo.id}`] = handle;
 
-    const delBtn = createDeleteButton(rect, "fbo", fbo.id);
-    deleteButtons[`fbo_${fbo.id}`] = delBtn;
+    const rotHandle = createRotateHandle(rect, "fbo", fbo.id);
+    rotateHandles[`fbo_${fbo.id}`] = rotHandle;
   });
 }
 
@@ -354,11 +470,31 @@ function updateTermBounds(termId, rect) {
   }
 }
 
+function updateTermCornersFromPoly(termId, rect) {
+  const term = airportData.terminals.find((t) => t.id === termId);
+  if (term) {
+    const latLngs = rect.getLatLngs()[0];
+    term.corners = latLngs.map(ll => [ll.lat, ll.lng]);
+    delete term.bounds;
+    markChanged();
+  }
+}
+
 function updateFBOBounds(fboId, rect) {
   const b = rect.getBounds();
   const fbo = airportData.fbos.find((f) => f.id === fboId);
   if (fbo) {
     fbo.bounds = [[b.getSouth(), b.getWest()], [b.getNorth(), b.getEast()]];
+    markChanged();
+  }
+}
+
+function updateFBOCornersFromPoly(fboId, rect) {
+  const fbo = airportData.fbos.find((f) => f.id === fboId);
+  if (fbo) {
+    const latLngs = rect.getLatLngs()[0];
+    fbo.corners = latLngs.map(ll => [ll.lat, ll.lng]);
+    delete fbo.bounds;
     markChanged();
   }
 }
@@ -380,12 +516,12 @@ function selectRect(type, id) {
     const isReno = term && term.renovation;
     const color = isReno ? "#fbbf24" : "#00d4ff";
     termRects[id].setStyle({ color, fillColor: color, weight: 3, opacity: 1, fillOpacity: 0.25 });
-    editMap.panTo(termRects[id].getCenter(), { animate: true });
+    editMap.panTo(termRects[id].getBounds().getCenter(), { animate: true });
     const card = document.querySelector(`.editor-term-card[data-term-id="${id}"]`);
     if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest" });
   } else if (type === "fbo" && fboRects[id]) {
     fboRects[id].setStyle({ color: "#00e87b", fillColor: "#00e87b", weight: 3, opacity: 1, fillOpacity: 0.25 });
-    editMap.panTo(fboRects[id].getCenter(), { animate: true });
+    editMap.panTo(fboRects[id].getBounds().getCenter(), { animate: true });
     const card = document.querySelector(`.editor-fbo-card[data-fbo-id="${id}"]`);
     if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
@@ -598,9 +734,9 @@ function bindTerminalCardEvents() {
         editMap.removeLayer(dragHandles[`term_${termId}`]);
         delete dragHandles[`term_${termId}`];
       }
-      if (deleteButtons[`term_${termId}`]) {
-        editMap.removeLayer(deleteButtons[`term_${termId}`]);
-        delete deleteButtons[`term_${termId}`];
+      if (rotateHandles[`term_${termId}`]) {
+        editMap.removeLayer(rotateHandles[`term_${termId}`]);
+        delete rotateHandles[`term_${termId}`];
       }
 
       markChanged();
@@ -635,14 +771,6 @@ function renderFBOCards() {
         <div class="editor-card-header">
           <input class="editor-card-name-input fbo-name-input" value="${escapeHtml(fbo.name)}" data-field="name" data-fbo-id="${fbo.id}" spellcheck="false">
           <button class="editor-card-delete fbo-delete" data-fbo-id="${fbo.id}" title="Delete FBO">&times;</button>
-        </div>
-        <div class="editor-card-field">
-          <label>Location</label>
-          <input class="editor-card-input" value="${escapeHtml(fbo.location)}" data-field="location" data-fbo-id="${fbo.id}" spellcheck="false">
-        </div>
-        <div class="editor-card-field">
-          <label>Phone</label>
-          <input class="editor-card-input" value="${escapeHtml(fbo.phone)}" data-field="phone" data-fbo-id="${fbo.id}" spellcheck="false">
         </div>
       </div>
     `)
@@ -687,9 +815,9 @@ function bindFBOCardEvents() {
         editMap.removeLayer(dragHandles[`fbo_${fboId}`]);
         delete dragHandles[`fbo_${fboId}`];
       }
-      if (deleteButtons[`fbo_${fboId}`]) {
-        editMap.removeLayer(deleteButtons[`fbo_${fboId}`]);
-        delete deleteButtons[`fbo_${fboId}`];
+      if (rotateHandles[`fbo_${fboId}`]) {
+        editMap.removeLayer(rotateHandles[`fbo_${fboId}`]);
+        delete rotateHandles[`fbo_${fboId}`];
       }
 
       markChanged();
@@ -713,21 +841,21 @@ function addTerminal() {
   const id = `T${nextTermId++}`;
   const center = editMap.getCenter();
   const offset = 0.001;
-  const bounds = [
+  const corners = boundsToCorners([
     [center.lat - offset, center.lng - offset],
     [center.lat + offset, center.lng + offset],
-  ];
+  ]);
 
   const newTerm = {
     id,
     name: `New Terminal`,
     gates: "TBD",
-    bounds,
+    corners,
   };
 
   airportData.terminals.push(newTerm);
 
-  const rect = L.rectangle(bounds, {
+  const rect = L.polygon(corners, {
     color: "#00d4ff",
     weight: 2,
     opacity: 0.6,
@@ -744,14 +872,11 @@ function addTerminal() {
   });
 
   rect.on("editable:vertex:dragend", () => {
-    updateTermBounds(id, rect);
+    updateTermCornersFromPoly(id, rect);
     if (dragHandles[`term_${id}`]) {
-      dragHandles[`term_${id}`].setLatLng(rect.getCenter());
+      dragHandles[`term_${id}`].setLatLng(rect.getBounds().getCenter());
     }
-    if (deleteButtons[`term_${id}`]) {
-      const b = rect.getBounds();
-      deleteButtons[`term_${id}`].setLatLng(L.latLng(b.getNorth(), b.getEast()));
-    }
+    syncRotateHandle(rect, "term", id);
   });
   rect.on("click", () => selectRect("term", id));
 
@@ -760,8 +885,8 @@ function addTerminal() {
   const handle = createDragHandle(rect, "term", id);
   dragHandles[`term_${id}`] = handle;
 
-  const delBtn = createDeleteButton(rect, "term", id);
-  deleteButtons[`term_${id}`] = delBtn;
+  const rotHandle = createRotateHandle(rect, "term", id);
+  rotateHandles[`term_${id}`] = rotHandle;
 
   markChanged();
   renderTerminalCards();
@@ -772,23 +897,21 @@ function addFBO() {
   const id = `FBO${nextFboId++}`;
   const center = editMap.getCenter();
   const offset = 0.0008;
-  const bounds = [
+  const corners = boundsToCorners([
     [center.lat - offset, center.lng - offset],
     [center.lat + offset, center.lng + offset],
-  ];
+  ]);
 
   const newFbo = {
     id,
     name: "New FBO",
-    location: "TBD",
-    phone: "TBD",
-    bounds,
+    corners,
   };
 
   if (!airportData.fbos) airportData.fbos = [];
   airportData.fbos.push(newFbo);
 
-  const rect = L.rectangle(bounds, {
+  const rect = L.polygon(corners, {
     color: "#00e87b",
     weight: 2,
     opacity: 0.5,
@@ -805,14 +928,11 @@ function addFBO() {
   });
 
   rect.on("editable:vertex:dragend", () => {
-    updateFBOBounds(id, rect);
+    updateFBOCornersFromPoly(id, rect);
     if (dragHandles[`fbo_${id}`]) {
-      dragHandles[`fbo_${id}`].setLatLng(rect.getCenter());
+      dragHandles[`fbo_${id}`].setLatLng(rect.getBounds().getCenter());
     }
-    if (deleteButtons[`fbo_${id}`]) {
-      const b = rect.getBounds();
-      deleteButtons[`fbo_${id}`].setLatLng(L.latLng(b.getNorth(), b.getEast()));
-    }
+    syncRotateHandle(rect, "fbo", id);
   });
   rect.on("click", () => selectRect("fbo", id));
 
@@ -821,8 +941,8 @@ function addFBO() {
   const handle = createDragHandle(rect, "fbo", id);
   dragHandles[`fbo_${id}`] = handle;
 
-  const delBtn = createDeleteButton(rect, "fbo", id);
-  deleteButtons[`fbo_${id}`] = delBtn;
+  const rotHandle = createRotateHandle(rect, "fbo", id);
+  rotateHandles[`fbo_${id}`] = rotHandle;
 
   markChanged();
   renderFBOCards();
@@ -856,7 +976,7 @@ async function saveData() {
 
     hasUnsavedChanges = false;
     updateSaveButtonState();
-    showToast("Saved successfully!");
+    showToast("Saved successfully! Changes may take a few minutes to update.");
   } catch (e) {
     console.error("Save failed", e);
     showToast(`Save failed: ${e.message}`, true);
@@ -883,6 +1003,24 @@ async function saveViaGitHub(token) {
   const filePath = `data/${icao.toLowerCase()}.json`;
   const content = JSON.stringify(airportData, null, 2);
   await saveFileToGitHub(token, filePath, content, `Update ${icao} airport data`);
+
+  // Update airports-index.json with current counts
+  try {
+    const indexResp = await fetch(DATA_BASE + "data/airports-index.json?v=" + Date.now());
+    const indexData = await indexResp.json();
+    if (indexData.airports[icao.toUpperCase()]) {
+      const entry = indexData.airports[icao.toUpperCase()];
+      entry.terminalCount = airportData.terminals ? airportData.terminals.filter(t => !t.renovation).length : 0;
+      entry.airlineCount = airportData.airlines ? Object.keys(airportData.airlines).length : 0;
+      entry.fboCount = airportData.fbos ? airportData.fbos.length : 0;
+      entry.name = airportData.name || entry.name;
+      entry.iata = airportData.iata || entry.iata;
+      entry.city = airportData.city || entry.city;
+      await saveFileToGitHub(token, "data/airports-index.json", JSON.stringify(indexData, null, 2), `Update ${icao} airport index counts`);
+    }
+  } catch (e) {
+    console.warn("Failed to update airports index counts", e);
+  }
 }
 
 function exportJSON() {
@@ -897,6 +1035,61 @@ function exportJSON() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast("JSON exported!");
+}
+
+function importJSON() {
+  document.getElementById("importFileInput").click();
+}
+
+function handleImportFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+
+      if (!imported.icao || !imported.terminals) {
+        showToast("Invalid airport JSON file — missing required fields", true);
+        return;
+      }
+
+      if (!confirm(`Import data from "${imported.icao}"? This will replace the current airport data.`)) {
+        return;
+      }
+
+      // Clear existing map layers
+      Object.values(termRects).forEach(r => editMap.removeLayer(r));
+      Object.values(fboRects).forEach(r => editMap.removeLayer(r));
+      Object.values(dragHandles).forEach(m => editMap.removeLayer(m));
+      Object.values(rotateHandles).forEach(m => editMap.removeLayer(m));
+
+      airportData = imported;
+      icao = imported.icao;
+
+      renderHeader();
+      drawTerminalRects();
+      drawFBORects();
+      renderTerminalCards();
+      renderFBOCards();
+
+      if (imported.map) {
+        editMap.setView(imported.map.center, imported.map.zoom);
+      }
+
+      markChanged();
+      showToast(`Imported ${imported.icao} data successfully!`);
+
+    } catch (err) {
+      console.error("Import error", err);
+      showToast(`Import failed: ${err.message}`, true);
+    }
+  };
+  reader.readAsText(file);
+
+  // Reset input so same file can be re-imported
+  event.target.value = "";
 }
 
 function resetToDefaults() {
@@ -939,6 +1132,8 @@ function updateSaveButtonState() {
 function bindEvents() {
   document.getElementById("saveBtn").addEventListener("click", saveData);
   document.getElementById("exportBtn").addEventListener("click", exportJSON);
+  document.getElementById("importBtn").addEventListener("click", importJSON);
+  document.getElementById("importFileInput").addEventListener("change", handleImportFile);
   document.getElementById("resetBtn").addEventListener("click", resetToDefaults);
   document.getElementById("addTerminalBtn").addEventListener("click", addTerminal);
   document.getElementById("addFBOBtn").addEventListener("click", addFBO);

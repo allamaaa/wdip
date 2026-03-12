@@ -51,11 +51,15 @@ function bindEvents() {
     document.getElementById("newKey").focus();
   });
 
-  // Cancel add form
+  // Cancel add/edit form
   document.getElementById("cancelAddBtn").addEventListener("click", () => {
-    document.getElementById("addAirlineForm").style.display = "none";
-    document.getElementById("addNewBtn").style.display = "";
-    clearAddForm();
+    if (editingKey) {
+      closeEditForm();
+    } else {
+      document.getElementById("addAirlineForm").style.display = "none";
+      document.getElementById("addNewBtn").style.display = "";
+      clearAddForm();
+    }
   });
 
   // Uppercase key and ICAO inputs
@@ -93,8 +97,19 @@ function renderList() {
         <span>${escapeHtml(db.name)}</span>
         <span style="color: var(--text-muted);">${escapeHtml(db.callsign || "\u2014")}</span>
         <span>${db.cargo ? '<span class="cargo-label">CARGO</span>' : ''}</span>
+        <button class="airline-edit-btn" data-key="${escapeHtml(key)}" title="Edit airline">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M14.85 2.85a1.5 1.5 0 012.1 0l.2.2a1.5 1.5 0 010 2.1L7.5 14.8l-3.3.7.7-3.3 9.95-9.32z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>`;
   }).join("");
+
+  // Bind edit buttons
+  container.querySelectorAll(".airline-edit-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openEditForm(btn.dataset.key);
+    });
+  });
 }
 
 function renderPagination() {
@@ -165,7 +180,7 @@ async function saveNewAirline() {
     const fileContent = buildAirlinesDbFile();
     await saveFileToGitHub(token, "airlines-db.js", fileContent, `Add airline: ${name} (${key})`);
 
-    showToast(`Added ${name} (${key})!`);
+    showToast(`Added ${name} (${key})! Changes may take a few minutes to appear.`);
 
     // Refresh list
     allAirlineKeys = Object.keys(AIRLINES_DB).sort((a, b) => AIRLINES_DB[a].name.localeCompare(AIRLINES_DB[b].name));
@@ -237,6 +252,136 @@ function showError(id, msg) {
 function hideError(id) {
   const el = document.getElementById(id);
   if (el) el.classList.remove("visible");
+}
+
+// ==========================================
+// EDIT AIRLINE
+// ==========================================
+
+let editingKey = null;
+
+function openEditForm(key) {
+  const db = AIRLINES_DB[key];
+  if (!db) return;
+
+  editingKey = key;
+
+  // Show the add form repurposed for editing
+  document.getElementById("addAirlineForm").style.display = "block";
+  document.getElementById("addNewBtn").style.display = "none";
+
+  // Update form title
+  const formTitle = document.querySelector("#addAirlineForm h3");
+  formTitle.textContent = `Edit Airline: ${key}`;
+
+  // Populate fields
+  document.getElementById("newKey").value = key.replace(/_C$/, "");
+  document.getElementById("newKey").disabled = true; // Can't change key
+  document.getElementById("newName").value = db.name;
+  document.getElementById("newIcao").value = db.icao;
+  document.getElementById("newCallsign").value = db.callsign || "";
+  document.getElementById("newCargo").checked = !!db.cargo;
+
+  // Switch save button to edit mode
+  const saveBtn = document.getElementById("saveAirlineBtn");
+  saveBtn.textContent = "Update Airline";
+  saveBtn.removeEventListener("click", saveNewAirline);
+  saveBtn.addEventListener("click", saveEditAirline);
+
+  document.getElementById("newName").focus();
+}
+
+async function saveEditAirline() {
+  const oldKey = editingKey;
+  if (!oldKey) return;
+
+  const name = document.getElementById("newName").value.trim();
+  const icao = document.getElementById("newIcao").value.trim().toUpperCase();
+  const callsign = document.getElementById("newCallsign").value.trim().toUpperCase();
+  const isCargo = document.getElementById("newCargo").checked;
+
+  if (!name || !icao) {
+    showToast("Name and ICAO Code are required", true);
+    return;
+  }
+
+  // Determine new key based on cargo status
+  const baseKey = oldKey.replace(/_C$/, "");
+  const newKey = isCargo ? (baseKey.endsWith("_C") ? baseKey : baseKey + "_C") : baseKey;
+
+  // Check if new key conflicts with existing (when key changes)
+  if (newKey !== oldKey && AIRLINES_DB[newKey]) {
+    showToast(`Key "${newKey}" already exists in the database.`, true);
+    return;
+  }
+
+  const token = localStorage.getItem("wdip_gh_token");
+  if (!token) {
+    showSettingsPanel();
+    showToast("GitHub token required to save airlines", true);
+    return;
+  }
+
+  const saveBtn = document.getElementById("saveAirlineBtn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving...";
+
+  // Build updated entry
+  const entry = { name, icao };
+  if (callsign) entry.callsign = callsign;
+  if (isCargo) entry.cargo = true;
+
+  // Update in-memory DB (handle key rename)
+  if (newKey !== oldKey) {
+    delete AIRLINES_DB[oldKey];
+  }
+  AIRLINES_DB[newKey] = entry;
+
+  try {
+    const fileContent = buildAirlinesDbFile();
+    await saveFileToGitHub(token, "airlines-db.js", fileContent, `Update airline: ${name} (${newKey})`);
+
+    showToast(`Updated ${name} (${newKey})! Changes may take a few minutes to appear.`);
+
+    // Refresh list
+    allAirlineKeys = Object.keys(AIRLINES_DB).sort((a, b) => AIRLINES_DB[a].name.localeCompare(AIRLINES_DB[b].name));
+    filteredKeys = [...allAirlineKeys];
+    currentPage = 1;
+    renderList();
+    renderPagination();
+
+    // Hide form and reset
+    closeEditForm();
+
+  } catch (e) {
+    console.error("Save failed", e);
+    showToast(`Save failed: ${e.message}`, true);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Update Airline";
+  }
+}
+
+function closeEditForm() {
+  editingKey = null;
+  document.getElementById("addAirlineForm").style.display = "none";
+  document.getElementById("addNewBtn").style.display = "";
+
+  // Reset form title
+  const formTitle = document.querySelector("#addAirlineForm h3");
+  formTitle.textContent = "New Airline";
+
+  // Re-enable fields
+  document.getElementById("newKey").disabled = false;
+  document.getElementById("newCargo").disabled = false;
+
+  // Reset save button
+  const saveBtn = document.getElementById("saveAirlineBtn");
+  saveBtn.textContent = "Save Airline";
+  saveBtn.removeEventListener("click", saveEditAirline);
+  saveBtn.addEventListener("click", saveNewAirline);
+
+  clearAddForm();
 }
 
 // Store the searchAirlines function text as a constant for file reconstruction

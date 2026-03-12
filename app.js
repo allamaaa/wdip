@@ -137,7 +137,36 @@ async function init() {
 
   initSettings();
   renderAirportCards();
+  updateHeroStats();
   bindEvents();
+}
+
+// ==========================================
+// HERO STATS
+// ==========================================
+
+function updateHeroStats() {
+  const airports = Object.values(AIRPORTS);
+  const activeAirports = airports.filter(a => a.status === "active").length;
+  let totalAirlines = 0;
+  let totalTerminals = 0;
+
+  airports.forEach(apt => {
+    if (apt.status !== "active") return;
+    totalAirlines += apt.airlineCount || 0;
+    totalTerminals += apt.terminalCount || 0;
+  });
+
+  const statValues = document.querySelectorAll(".hero-stats .stat-value");
+  const statLabels = document.querySelectorAll(".hero-stats .stat-label");
+  if (statValues.length >= 3) {
+    statValues[0].textContent = activeAirports;
+    statLabels[0].textContent = activeAirports === 1 ? "Active Airport" : "Active Airports";
+    statValues[1].textContent = totalAirlines > 0 ? totalAirlines + "+" : "0";
+    statLabels[1].textContent = "Airlines Mapped";
+    statValues[2].textContent = totalTerminals;
+    statLabels[2].textContent = totalTerminals === 1 ? "Terminal" : "Terminals";
+  }
 }
 
 // ==========================================
@@ -432,7 +461,13 @@ function renderAirportMap() {
     const isRenovation = !!term.renovation;
     const style = isRenovation ? RECT_STYLE_RENOVATION : RECT_STYLE_DEFAULT;
 
-    const rect = L.rectangle(term.bounds, style);
+    const shape = term.corners || [
+      [term.bounds[0][0], term.bounds[0][1]],
+      [term.bounds[0][0], term.bounds[1][1]],
+      [term.bounds[1][0], term.bounds[1][1]],
+      [term.bounds[1][0], term.bounds[0][1]],
+    ];
+    const rect = L.polygon(shape, style);
     rect.addTo(leafletMap);
 
     let tooltipContent = `<strong>${term.name}</strong>`;
@@ -469,8 +504,14 @@ function renderAirportMap() {
   fboRectangles = {};
   if (currentAirport.fbos) {
     currentAirport.fbos.forEach((fbo) => {
-      if (!fbo.bounds) return;
-      const rect = L.rectangle(fbo.bounds, RECT_STYLE_FBO);
+      if (!fbo.bounds && !fbo.corners) return;
+      const fboShape = fbo.corners || [
+        [fbo.bounds[0][0], fbo.bounds[0][1]],
+        [fbo.bounds[0][0], fbo.bounds[1][1]],
+        [fbo.bounds[1][0], fbo.bounds[1][1]],
+        [fbo.bounds[1][0], fbo.bounds[0][1]],
+      ];
+      const rect = L.polygon(fboShape, RECT_STYLE_FBO);
       rect.addTo(leafletMap);
 
       rect.bindTooltip(`<strong>${fbo.name}</strong><span class="tooltip-gates">FBO — General Aviation</span>`, {
@@ -874,8 +915,8 @@ function renderFBOs() {
       (fbo) => `
     <div class="fbo-item" data-fbo-id="${fbo.id || ""}">
       <div class="fbo-name">${fbo.name}</div>
-      <div class="fbo-location">${fbo.location}</div>
-      <div class="fbo-phone">${fbo.phone}</div>
+      ${fbo.location ? `<div class="fbo-location">${fbo.location}</div>` : ""}
+      ${fbo.phone ? `<div class="fbo-phone">${fbo.phone}</div>` : ""}
     </div>`
     )
     .join("");

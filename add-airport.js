@@ -161,7 +161,7 @@ async function submitAirport() {
       `Add ${icao} to airports index`
     );
 
-    showToast("Airport created!");
+    showToast("Airport created! Changes may take a few minutes to update.");
 
     // Redirect to edit page
     setTimeout(() => {

@@ -2050,6 +2050,29 @@ body {
   border-color: var(--accent) !important;
 }
 
+.rotate-handle-icon {
+  background: rgba(168, 85, 247, 0.85) !important;
+  border: 2px solid rgba(255, 255, 255, 0.7) !important;
+  border-radius: 50% !important;
+  width: 22px !important;
+  height: 22px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: grab;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transition: background 0.15s;
+}
+
+.rotate-handle-icon:hover {
+  background: rgba(168, 85, 247, 1) !important;
+  transform: scale(1.15);
+}
+
+.rotate-handle-icon:active {
+  cursor: grabbing;
+}
+
 .drag-handle-icon:active {
   cursor: grabbing !important;
 }
@@ -2653,7 +2676,7 @@ body {
 
 .airline-list-item {
   display: grid;
-  grid-template-columns: 80px 1fr 120px 80px;
+  grid-template-columns: 80px 1fr 120px 80px 36px;
   gap: 12px;
   align-items: center;
   padding: 10px 16px;
@@ -2684,6 +2707,25 @@ body {
   border-radius: 4px;
   color: #fbbf24;
   font-weight: 600;
+}
+
+.airline-edit-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.airline-edit-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-glow);
 }
 
 .airline-pagination {
