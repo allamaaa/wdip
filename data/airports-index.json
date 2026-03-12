@@ -7,9 +7,9 @@
       "city": "New York, NY",
       "status": "active",
       "file": "data/kjfk.json",
-      "terminalCount": 4,
-      "airlineCount": 43,
-      "fboCount": 2
+      "terminalCount": 9,
+      "airlineCount": 59,
+      "fboCount": 1
     },
     "KLGA": {
       "icao": "KLGA",
