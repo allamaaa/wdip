@@ -53,6 +53,17 @@
       "terminalCount": 2,
       "airlineCount": 5,
       "fboCount": 4
+    },
+    "KTEB": {
+      "icao": "KTEB",
+      "iata": "TEB",
+      "name": "Tebeboro Airport",
+      "city": "Teteboro, NJ",
+      "status": "active",
+      "file": "data/kteb.json",
+      "terminalCount": 0,
+      "airlineCount": 0,
+      "fboCount": 0
     }
   }
 }
