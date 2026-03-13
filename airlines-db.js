@@ -152,7 +152,8 @@ const AIRLINES_DB = {
   ASL: { name: "Air Serbia", icao: "ASL", callsign: "AIR SERBIA" },
   AEA: { name: "Air Europa", icao: "AEA", callsign: "EUROPA" },
   BWA: { name: "Carribean Airlines", icao: "BWA", callsign: "CARIBBEAN AIRLINES" },
-  SCX: { name: "Sun Country Airlines", icao: "SCX", callsign: "SUN COUNTRY" }
+  SCX: { name: "Sun Country Airlines", icao: "SCX", callsign: "SUN COUNTRY" },
+  UZB: { name: "Uzbekistan Airways", icao: "UZB", callsign: "UZBEK" }
 };
 
 /**
