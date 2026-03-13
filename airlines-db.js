@@ -146,7 +146,8 @@ const AIRLINES_DB = {
   LXJ: { name: "FlexJet", icao: "LXJ", callsign: "FLEXJET" },
   JIA: { name: "PSA Airlines (American Eagle)", icao: "JIA", callsign: "BLUE STREAK" },
   GJS: { name: "GoJet Airlines (United Express)", icao: "GJS", callsign: "LINDBERGH" },
-  AHY: { name: "Azerbaijan Airways", icao: "AHY", callsign: "AZAL" }
+  AHY: { name: "Azerbaijan Airways", icao: "AHY", callsign: "AZAL" },
+  UCA: { name: "Commute Air (United Express)", icao: "UCA", callsign: "COMMUTEAIR" }
 };
 
 /**
