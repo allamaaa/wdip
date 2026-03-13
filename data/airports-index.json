@@ -87,7 +87,7 @@
       "name": "San Luis Obispo County Regional Airport",
       "city": "San Luis Obispo, CA",
       "status": "active",
-      "verificationStatus": "in_progress",
+      "verificationStatus": "verified",
       "file": "data/ksbp.json",
       "terminalCount": 1,
       "airlineCount": 7,
