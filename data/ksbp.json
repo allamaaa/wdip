@@ -17,7 +17,7 @@
   "terminals": [
     {
       "id": "T100",
-      "name": "New Terminal",
+      "name": "Main Terminal",
       "gates": "1-6",
       "corners": [
         [
