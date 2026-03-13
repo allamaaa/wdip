@@ -151,7 +151,8 @@ const AIRLINES_DB = {
   CAY: { name: "Cayman Airways", icao: "CAY", callsign: "CAYMAN" },
   ASL: { name: "Air Serbia", icao: "ASL", callsign: "AIR SERBIA" },
   AEA: { name: "Air Europa", icao: "AEA", callsign: "EUROPA" },
-  BWA: { name: "Carribean Airlines", icao: "BWA", callsign: "CARIBBEAN AIRLINES" }
+  BWA: { name: "Carribean Airlines", icao: "BWA", callsign: "CARIBBEAN AIRLINES" },
+  SCX: { name: "Sun Country Airlines", icao: "SCX", callsign: "SUN COUNTRY" }
 };
 
 /**
