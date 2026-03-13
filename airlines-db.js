@@ -148,7 +148,8 @@ const AIRLINES_DB = {
   GJS: { name: "GoJet Airlines (United Express)", icao: "GJS", callsign: "LINDBERGH" },
   AHY: { name: "Azerbaijan Airways", icao: "AHY", callsign: "AZAL" },
   UCA: { name: "Commute Air (United Express)", icao: "UCA", callsign: "COMMUTEAIR" },
-  CAY: { name: "Cayman Airways", icao: "CAY", callsign: "CAYMAN" }
+  CAY: { name: "Cayman Airways", icao: "CAY", callsign: "CAYMAN" },
+  ASL: { name: "Air Serbia", icao: "ASL", callsign: "AIR SERBIA" }
 };
 
 /**
