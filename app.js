@@ -10,6 +10,11 @@
 
 let AIRPORTS = {};
 
+const VERIFICATION_LABELS = {
+  verified: "Verified",
+  in_progress: "In Progress",
+};
+
 // ==========================================
 // DOM REFS
 // ==========================================
@@ -181,6 +186,10 @@ function renderAirportCards() {
     .map((apt) => {
       const isActive = apt.status === "active";
       const cardClass = isActive ? "airport-card" : "airport-card coming-soon";
+      const verificationStatus = getVerificationStatus(apt);
+      const verificationBadge = isActive
+        ? `<span class="verification-badge ${verificationStatus}">${verificationStatus === "verified" ? "✓" : "◔"} ${VERIFICATION_LABELS[verificationStatus]}</span>`
+        : "";
 
       let meta = "";
       if (isActive && (apt.terminals || apt.terminalCount)) {
@@ -214,6 +223,7 @@ function renderAirportCards() {
 
       return `
         <div class="${cardClass}" data-icao="${apt.icao}">
+          ${verificationBadge}
           ${!isActive ? '<span class="coming-soon-badge">Coming Soon</span>' : ""}
           <div class="airport-card-icao">${apt.icao}</div>
           <div class="airport-card-name">${apt.name}</div>
@@ -385,7 +395,8 @@ async function openAirport(icao) {
   // Update header
   dom.airportInfoHeader.innerHTML = `
     <span class="icao">${currentAirport.icao}</span>
-    <span class="name">${currentAirport.name} — ${currentAirport.city}</span>`;
+    <span class="name">${currentAirport.name} — ${currentAirport.city}</span>
+    <span class="verification-chip ${getVerificationStatus(currentAirport)}">${getVerificationStatus(currentAirport) === "verified" ? "✓" : "◔"} ${VERIFICATION_LABELS[getVerificationStatus(currentAirport)]}</span>`;
 
   // Render map
   renderAirportMap();
@@ -419,6 +430,10 @@ async function openAirport(icao) {
     dom.airlineInput.focus();
     if (leafletMap) leafletMap.invalidateSize();
   }, 300);
+}
+
+function getVerificationStatus(airport) {
+  return airport.verificationStatus === "verified" ? "verified" : "in_progress";
 }
 
 function closeAirport() {
