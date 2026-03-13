@@ -98,6 +98,13 @@ function renderHeader() {
         <label>City / Location</label>
         <input class="editor-card-input" id="metaCity" value="${escapeHtml(airportData.city || '')}" placeholder="New York, NY" spellcheck="false">
       </div>
+      <div class="editor-meta-field editor-meta-wide">
+        <label>Verification</label>
+        <select class="editor-card-input" id="metaVerificationStatus">
+          <option value="in_progress" ${getVerificationStatus(airportData) === "in_progress" ? "selected" : ""}>In Progress</option>
+          <option value="verified" ${getVerificationStatus(airportData) === "verified" ? "selected" : ""}>Verified</option>
+        </select>
+      </div>
     </div>`;
 
   // Bind change events to update airportData
@@ -111,6 +118,18 @@ function renderHeader() {
       });
     }
   });
+
+  const verificationSelect = document.getElementById("metaVerificationStatus");
+  if (verificationSelect) {
+    verificationSelect.addEventListener("change", () => {
+      airportData.verificationStatus = verificationSelect.value === "verified" ? "verified" : "in_progress";
+      markChanged();
+    });
+  }
+}
+
+function getVerificationStatus(airport) {
+  return airport.verificationStatus === "verified" ? "verified" : "in_progress";
 }
 
 // ==========================================
@@ -1004,6 +1023,7 @@ async function saveViaGitHub(token) {
       entry.name = airportData.name || entry.name;
       entry.iata = airportData.iata || entry.iata;
       entry.city = airportData.city || entry.city;
+      entry.verificationStatus = getVerificationStatus(airportData);
       await saveFileToGitHub(token, "data/airports-index.json", JSON.stringify(indexData, null, 2), `Update ${icao} airport index counts`);
     }
   } catch (e) {
@@ -1053,6 +1073,7 @@ function handleImportFile(event) {
       Object.values(dragHandles).forEach(m => editMap.removeLayer(m));
 
       airportData = imported;
+      airportData.verificationStatus = getVerificationStatus(imported);
       icao = imported.icao;
 
       renderHeader();

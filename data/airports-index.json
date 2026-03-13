@@ -9,7 +9,8 @@
       "file": "data/kjfk.json",
       "terminalCount": 9,
       "airlineCount": 75,
-      "fboCount": 1
+      "fboCount": 1,
+      "verificationStatus": "verified"
     },
     "KLGA": {
       "icao": "KLGA",
@@ -41,7 +42,8 @@
       "file": "data/khpn.json",
       "terminalCount": 3,
       "airlineCount": 5,
-      "fboCount": 5
+      "fboCount": 5,
+      "verificationStatus": "in_progress"
     },
     "KABE": {
       "icao": "KABE",
@@ -52,7 +54,8 @@
       "file": "data/kabe.json",
       "terminalCount": 2,
       "airlineCount": 6,
-      "fboCount": 4
+      "fboCount": 4,
+      "verificationStatus": "verified"
     },
     "KTEB": {
       "icao": "KTEB",
@@ -63,7 +66,8 @@
       "file": "data/kteb.json",
       "terminalCount": 0,
       "airlineCount": 0,
-      "fboCount": 5
+      "fboCount": 5,
+      "verificationStatus": "in_progress"
     },
     "KMDT": {
       "icao": "KMDT",
@@ -74,7 +78,8 @@
       "file": "data/kmdt.json",
       "terminalCount": 2,
       "airlineCount": 11,
-      "fboCount": 5
+      "fboCount": 5,
+      "verificationStatus": "in_progress"
     }
   }
 }
