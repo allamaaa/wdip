@@ -1,0 +1,20 @@
+{
+  "icao": "KMDT",
+  "iata": "MDT",
+  "name": "Harrisburg International Airport",
+  "city": "Harrisburg, PA",
+  "elevation": "",
+  "status": "active",
+  "runways": [],
+  "map": {
+    "center": [
+      40.19320049869299,
+      -76.7529344558716
+    ],
+    "zoom": 15
+  },
+  "terminals": [],
+  "airlines": {},
+  "quickAirlines": [],
+  "fbos": []
+}
