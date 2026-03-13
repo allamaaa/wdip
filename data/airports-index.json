@@ -72,9 +72,9 @@
       "city": "Harrisburg, PA",
       "status": "active",
       "file": "data/kmdt.json",
-      "terminalCount": 0,
-      "airlineCount": 0,
-      "fboCount": 0
+      "terminalCount": 2,
+      "airlineCount": 10,
+      "fboCount": 5
     }
   }
 }
