@@ -149,7 +149,8 @@ const AIRLINES_DB = {
   AHY: { name: "Azerbaijan Airways", icao: "AHY", callsign: "AZAL" },
   UCA: { name: "Commute Air (United Express)", icao: "UCA", callsign: "COMMUTEAIR" },
   CAY: { name: "Cayman Airways", icao: "CAY", callsign: "CAYMAN" },
-  ASL: { name: "Air Serbia", icao: "ASL", callsign: "AIR SERBIA" }
+  ASL: { name: "Air Serbia", icao: "ASL", callsign: "AIR SERBIA" },
+  AEA: { name: "Air Europa", icao: "AEA", callsign: "EUROPA" }
 };
 
 /**
