@@ -43,7 +43,7 @@
       "terminalCount": 3,
       "airlineCount": 5,
       "fboCount": 5,
-      "verificationStatus": "verified"
+      "verificationStatus": "in_progress"
     },
     "KABE": {
       "icao": "KABE",
@@ -79,7 +79,7 @@
       "terminalCount": 2,
       "airlineCount": 11,
       "fboCount": 5,
-      "verificationStatus": "in_progress"
+      "verificationStatus": "verified"
     }
   }
 }
