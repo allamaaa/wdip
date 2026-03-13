@@ -64,6 +64,17 @@
       "terminalCount": 0,
       "airlineCount": 0,
       "fboCount": 5
+    },
+    "KMDT": {
+      "icao": "KMDT",
+      "iata": "MDT",
+      "name": "Harrisburg International Airport",
+      "city": "Harrisburg, PA",
+      "status": "active",
+      "file": "data/kmdt.json",
+      "terminalCount": 0,
+      "airlineCount": 0,
+      "fboCount": 0
     }
   }
 }
