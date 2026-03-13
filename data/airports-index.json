@@ -43,7 +43,7 @@
       "terminalCount": 3,
       "airlineCount": 5,
       "fboCount": 5,
-      "verificationStatus": "verified"
+      "verificationStatus": "in_progress"
     },
     "KABE": {
       "icao": "KABE",
@@ -80,6 +80,18 @@
       "airlineCount": 11,
       "fboCount": 5,
       "verificationStatus": "verified"
+    },
+    "KSBP": {
+      "icao": "KSBP",
+      "iata": "SBP",
+      "name": "San Luis Obispo County Regional Airport",
+      "city": "San Luis Obispo, CA",
+      "status": "active",
+      "verificationStatus": "in_progress",
+      "file": "data/ksbp.json",
+      "terminalCount": 0,
+      "airlineCount": 0,
+      "fboCount": 0
     }
   }
 }
