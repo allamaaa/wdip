@@ -1,0 +1,21 @@
+{
+  "icao": "KSBP",
+  "iata": "SBP",
+  "name": "San Luis Obispo County Regional Airport",
+  "city": "San Luis Obispo, CA",
+  "elevation": "",
+  "status": "active",
+  "verificationStatus": "in_progress",
+  "runways": [],
+  "map": {
+    "center": [
+      35.2375156,
+      -120.6433148
+    ],
+    "zoom": 15
+  },
+  "terminals": [],
+  "airlines": {},
+  "quickAirlines": [],
+  "fbos": []
+}
