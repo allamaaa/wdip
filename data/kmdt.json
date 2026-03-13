@@ -188,6 +188,11 @@
       "name": "FedEx Express",
       "icao": "FDX",
       "terminal": "T101"
+    },
+    "UCA": {
+      "name": "Commute Air (United Express)",
+      "icao": "UCA",
+      "terminal": "T100"
     }
   },
   "quickAirlines": [],
