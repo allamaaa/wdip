@@ -28,7 +28,7 @@ const AIRLINES_DB = {
   TSC: { name: "Air Transat", icao: "TSC", callsign: "AIR TRANSAT" },
   POE: { name: "Porter Airlines", icao: "POE", callsign: "PORTER" },
   AMX: { name: "Aeromexico", icao: "AMX", callsign: "AEROMEXICO" },
-  VIV: { name: "Viva Aerobus", icao: "VIV", callsign: "VIVA" },
+  VIV: { name: "Viva Aerobus", icao: "VIV", callsign: "AEROENLACES" },
   VOI: { name: "Volaris", icao: "VOI", callsign: "VOLARIS" },
   FDX: { name: "FedEx Express", icao: "FDX", callsign: "FEDEX", cargo: true },
   UPS: { name: "UPS Airlines", icao: "UPS", callsign: "UPS", cargo: true },
