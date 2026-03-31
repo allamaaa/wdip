@@ -154,7 +154,8 @@ const AIRLINES_DB = {
   BWA: { name: "Carribean Airlines", icao: "BWA", callsign: "CARIBBEAN AIRLINES" },
   SCX: { name: "Sun Country Airlines", icao: "SCX", callsign: "SUN COUNTRY" },
   UZB: { name: "Uzbekistan Airways", icao: "UZB", callsign: "UZBEK" },
-  AUI: { name: "Ukraine International", icao: "AUI", callsign: "UKRAINE INTERNATIONAL" }
+  AUI: { name: "Ukraine International", icao: "AUI", callsign: "UKRAINE INTERNATIONAL" },
+  BAW_CON: { name: "British Airways (Concorde only)", icao: "BAW", callsign: "SPEEDBIRD CONCORDE" }
 };
 
 /**
