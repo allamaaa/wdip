@@ -799,6 +799,11 @@
       "name": "British Airways",
       "icao": "BAW",
       "terminal": "T8"
+    },
+    "BAW_CON": {
+      "name": "British Airways (Concorde only)",
+      "icao": "BAW",
+      "terminal": "T7"
     }
   },
   "quickAirlines": [
