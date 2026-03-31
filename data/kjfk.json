@@ -183,7 +183,7 @@
     {
       "id": "T7",
       "name": "Terminal 7",
-      "gates": "1-9",
+      "gates": "1-9 ",
       "renovation": false,
       "corners": [
         [
@@ -575,11 +575,6 @@
       "icao": "AAL",
       "terminal": "T8"
     },
-    "BAW": {
-      "name": "British Airways",
-      "icao": "BAW",
-      "terminal": "T7"
-    },
     "CPA": {
       "name": "Cathay Pacific",
       "icao": "CPA",
@@ -799,6 +794,11 @@
       "name": "LATAM Airlines",
       "icao": "TAM",
       "terminal": "T4"
+    },
+    "BAW": {
+      "name": "British Airways",
+      "icao": "BAW",
+      "terminal": "T8"
     }
   },
   "quickAirlines": [
